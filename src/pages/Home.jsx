@@ -10,6 +10,8 @@ import {
 } from "firebase/firestore";
 import AnnouncementStrip from "../components/AnnouncementStrip";
 import HomeSearch from "../components/home/HomeSearch";
+import StatsCards from "../components/home/StatsCards";
+import QuickActions from "../components/home/QuickActions";
 
 import HomeHeader from "../components/home/HomeHeader";
 
@@ -20,17 +22,6 @@ import BottomNav from "../components/BottomNav";
 import logo from "../assets/logo.png";
 import WelcomeCard from "../components/WelcomeCard";
 
-
-
-import {
-  FaUsers,
-  FaBriefcase,
-  FaBullhorn,
-  FaUniversity,
-  FaGift,
-  FaUserTie,
-  FaMapMarkerAlt,
-} from "react-icons/fa";
 
 function Home() {
   const navigate = useNavigate();
@@ -350,40 +341,12 @@ const fetchCounts =
     }
   }}
 />
-<div
-  style={{
-    background: "#fff",
-    borderRadius: "20px",
-    padding: "20px",
-    marginBottom: "20px",
-    boxShadow:
-      "0 8px 20px rgba(0,0,0,0.08)",
-  }}
->
-  <h3
-    style={{
-      color: "#2D1B7E",
-      marginTop: 0,
-    }}
-  >
-    Community Statistics
-  </h3>
 
-  <p>
-    👨‍👩‍👧‍👦 Families :
-    {familyCount}
-  </p>
-
-  <p>
-    👤 Members :
-    {memberCount}
-  </p>
-
-  <p>
-    🏢 Businesses :
-    {businessCount}
-  </p>
-</div>
+<StatsCards
+  familyCount={familyCount}
+  memberCount={memberCount}
+  businessCount={businessCount}
+/>
       {/* Add Business */}
 
       <button
@@ -409,110 +372,7 @@ const fetchCounts =
         + Add Business
       </button>
 
-      {/* Categories */}
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(3,1fr)",
-          gap: "12px",
-        }}
-      >
-        <div
-         style={dashboardCard}
-          onClick={() =>
-            navigate("/families")
-          }
-        >
-          <div style={iconCircle}>
-            <FaUsers
-              color="#fff"
-              size={20}
-            />
-          </div>
-
-          <p style={textStyle}>
-            Families
-          </p>
-        </div>
-
-        <div
-          style={cardStyle}
-          onClick={() =>
-            navigate("/jobs")
-          }
-        >
-          <div style={iconCircle}>
-            <FaBriefcase
-              color="#fff"
-              size={20}
-            />
-          </div>
-
-          <p style={textStyle}>
-            Jobs
-          </p>
-        </div>
-
-        <div style={cardStyle}>
-          <div style={iconCircle}>
-            <FaBullhorn
-              color="#fff"
-              size={20}
-            />
-          </div>
-
-          <p style={textStyle}>
-            Updates
-          </p>
-        </div>
-
-        <div 
-        style={cardStyle}>
-          <div style={iconCircle}>
-            <FaUniversity
-              color="#fff"
-              size={20}
-            />
-          </div>
-
-          <p style={textStyle}>
-            Mahajan
-          </p>
-        </div>
-
-        <div style={cardStyle}>
-          <div style={iconCircle}>
-            <FaGift
-              color="#fff"
-              size={20}
-            />
-          </div>
-
-          <p style={textStyle}>
-            Offers
-          </p>
-        </div>
-
-       <div
-  style={cardStyle}
-  onClick={() =>
-    navigate("/professionals")
-  }
->
-  <div style={iconCircle}>
-    <FaUserTie
-      color="#fff"
-      size={20}
-    />
-  </div>
-
-  <p style={textStyle}>
-    Professionals
-  </p>
-</div>
-      </div>
+      <QuickActions />
 
 <div
   style={{
@@ -739,47 +599,5 @@ const fetchCounts =
   );
 }
 
-const cardStyle = {
-  background: "#fff",
-  borderRadius: "20px",
-  padding: "15px 8px",
-  minHeight: "110px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  cursor: "pointer",
-  boxShadow:
-    "0 8px 20px rgba(0,0,0,0.08)",
-};
-
-const iconCircle = {
-  width: "50px",
-  height: "50px",
-  borderRadius: "50%",
-  background:
-    "linear-gradient(135deg,#2D1B7E,#FF5A1F)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: "10px",
-};
-
-const dashboardCard = {
-  background: "#fff",
-  borderRadius: "22px",
-  padding: "18px",
-  textAlign: "center",
-  cursor: "pointer",
-  boxShadow:
-    "0 8px 20px rgba(0,0,0,0.08)",
-};
-
-const textStyle = {
-  fontSize: "14px",
-  fontWeight: "700",
-  color: "#2D1B7E",
-  letterSpacing: "-0.2px",
-};
 
 export default Home;
