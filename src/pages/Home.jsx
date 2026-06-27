@@ -9,6 +9,9 @@ import {
   getDocs,
 } from "firebase/firestore";
 import AnnouncementStrip from "../components/AnnouncementStrip";
+import HomeSearch from "../components/home/HomeSearch";
+
+import HomeHeader from "../components/home/HomeHeader";
 
 import { db } from "../firebase/config";
 import AdvertisementSlider from "../components/AdvertisementSlider";
@@ -326,39 +329,25 @@ const fetchCounts =
 
       <WelcomeCard />
       <AnnouncementStrip />
+      <HomeHeader />  
 
 <AdvertisementSlider />
       {/* Search */}
 
-      <input
-  type="text"
-  placeholder="Search Family, Business, Member..."
+     <HomeSearch
   value={search}
   onChange={(e) =>
     setSearch(e.target.value)
   }
-  onKeyDown={(e) => {
+  onSearch={(e) => {
     if (
       e.key === "Enter" &&
       search.trim()
     ) {
       navigate(
-        `/search?q=${encodeURIComponent(
-          search
-        )}`
+        `/search?q=${encodeURIComponent(search)}`
       );
     }
-  }}
-  style={{
-    width: "100%",
-    padding: "14px",
-    borderRadius: "16px",
-    border: "none",
-    outline: "none",
-    background: "#fff",
-    boxShadow:
-      "0 8px 25px rgba(0,0,0,0.06)",
-    marginBottom: "15px",
   }}
 />
 <div
