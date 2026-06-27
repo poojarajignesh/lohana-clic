@@ -76,4 +76,3 @@ export const Input = {
   outline: "none",
   fontSize: "15px",
   boxSizing: "border-box",
-};
