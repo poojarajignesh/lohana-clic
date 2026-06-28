@@ -1,65 +1,70 @@
-import { getLoggedFamily, logoutFamily } from "../auth/Auth";
-import { useNavigate } from "react-router-dom";
+import { FaUserCircle, FaMapMarkerAlt } from "react-icons/fa";
+import { getLoggedFamily } from "../auth/Auth";
+import { Colors } from "../theme";
 
 function WelcomeCard() {
-  const navigate = useNavigate();
-
   const family = getLoggedFamily();
-
-  if (!family) return null;
 
   return (
     <div
       style={{
-        background:
-          "linear-gradient(135deg,#2D1B7E,#FF5A1F)",
+        background: Colors.gradientPrimary,
+        borderRadius: "26px",
+        padding: "22px",
         color: "#fff",
-        padding: "20px",
-        borderRadius: "20px",
         marginBottom: "20px",
+        boxShadow: Colors.shadow,
       }}
     >
-      <h2
+      <div
         style={{
-          margin: 0,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        👋 Welcome
-      </h2>
+        <div>
+          <p
+            style={{
+              margin: 0,
+              opacity: .9,
+              fontSize: "14px",
+            }}
+          >
+            Welcome 👋
+          </p>
 
-      <h3
-        style={{
-          marginTop: "8px",
-          marginBottom: "8px",
-        }}
-      >
-        {family.headName || family.familyName}
-      </h3>
+          <h2
+            style={{
+              margin: "8px 0",
+              fontWeight: "800",
+            }}
+          >
+            {family?.headName || "Guest"}
+          </h2>
 
-      <p
-        style={{
-          margin: 0,
-        }}
-      >
-        📍 {family.city || family.village || "Gujarat"}
-      </p>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              opacity: .9,
+              fontSize: "14px",
+            }}
+          >
+            <FaMapMarkerAlt />
 
-      <button
-        onClick={() => {
-          logoutFamily();
-          navigate("/family-login");
-        }}
-        style={{
-          marginTop: "15px",
-          padding: "10px 18px",
-          border: "none",
-          borderRadius: "10px",
-          cursor: "pointer",
-          fontWeight: "700",
-        }}
-      >
-        Logout
-      </button>
+            {family?.currentPlace ||
+              family?.city ||
+              "Ahmedabad"}
+          </div>
+        </div>
+
+        <FaUserCircle
+          size={65}
+          color="#ffffff"
+        />
+      </div>
     </div>
   );
 }

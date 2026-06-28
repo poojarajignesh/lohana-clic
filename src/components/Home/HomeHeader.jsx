@@ -1,17 +1,20 @@
 import { FaBell, FaUserCircle } from "react-icons/fa";
 import { Colors } from "../../theme";
+import { getLoggedFamily } from "../../auth/Auth";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
+const loggedFamily = getLoggedFamily();
 function HomeHeader() {
   return (
-    <div
-      style={{
-        background: Colors.gradientPrimary,
-        borderRadius: "0 0 30px 30px",
-        padding: "25px 20px 35px",
-        color: "#fff",
-        boxShadow: Colors.shadow,
-      }}
-    >
+   <div
+  style={{
+    background: Colors.gradientPrimary,
+    borderRadius: "22px",
+    padding: "22px",
+    color: "#fff",
+    boxShadow: Colors.shadow,
+  }}
+>
       <div
         style={{
           display: "flex",
@@ -30,14 +33,33 @@ function HomeHeader() {
             Welcome Back 👋
           </p>
 
-          <h2
-            style={{
-              margin: "5px 0 0",
-              fontWeight: "800",
-            }}
-          >
-            Lohana Clic
-          </h2>
+         <h2
+  style={{
+    margin: "4px 0",
+    fontWeight: "800",
+    fontSize: "24px",
+  }}
+>
+  {loggedFamily?.headName ||
+    "Lohana Member"}
+</h2>
+
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+    opacity: .9,
+    fontSize: "13px",
+  }}
+>
+  <FaMapMarkerAlt />
+
+  {loggedFamily?.currentPlace ||
+  loggedFamily?.village ||
+  loggedFamily?.district ||
+  "Gujarat"}
+</div>
         </div>
 
         <div
@@ -52,7 +74,19 @@ function HomeHeader() {
             style={{ cursor: "pointer" }}
           />
 
-          <FaUserCircle size={38} />
+          <div
+  style={{
+    width: "42px",
+    height: "42px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,.18)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  <FaUserCircle size={30} />
+</div>
         </div>
       </div>
     </div>

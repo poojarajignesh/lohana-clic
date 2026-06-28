@@ -20,7 +20,9 @@ import AdvertisementSlider from "../components/AdvertisementSlider";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 import logo from "../assets/logo.png";
-import WelcomeCard from "../components/WelcomeCard";
+
+import LatestCards from "../components/home/LatestCards";
+import AddBusinessButton from "../components/home/AddBusinessButton";
 
 
 function Home() {
@@ -291,7 +293,7 @@ const fetchCounts =
       style={{
         maxWidth: "420px",
         margin: "0 auto",
-        padding: "20px",
+       padding: "12px 20px 120px",
         paddingBottom: "120px",
       }}
     >
@@ -304,7 +306,7 @@ const fetchCounts =
       <div
         style={{
           textAlign: "center",
-          marginBottom: "25px",
+          marginBottom: "4px",
         }}
       >
         <img
@@ -317,12 +319,18 @@ const fetchCounts =
           }}
         />
       </div>
-
-      <WelcomeCard />
+    
+      <div
+  style={{
+    marginBottom: "16px",
+  }}
+>
+  <HomeHeader />
+</div>
+      
       <AnnouncementStrip />
-      <HomeHeader />  
-
-<AdvertisementSlider />
+      <AdvertisementSlider />
+      
       {/* Search */}
 
      <HomeSearch
@@ -349,188 +357,18 @@ const fetchCounts =
 />
       {/* Add Business */}
 
-      <button
-        onClick={() =>
-          navigate("/add-business")
-        }
-        style={{
-          width: "100%",
-          padding: "14px",
-          border: "none",
-          borderRadius: "16px",
-          background:
-            "linear-gradient(135deg,#FF5A1F,#FF7A45)",
-          color: "#fff",
-          fontSize: "13px",
-          fontWeight: "700",
-          cursor: "pointer",
-          marginBottom: "25px",
-          boxShadow:
-            "0 10px 20px rgba(255,90,31,0.25)",
-        }}
-      >
-        + Add Business
-      </button>
+      <AddBusinessButton
+  onClick={() =>
+    navigate("/add-business")
+  }
+/>
 
-      <QuickActions />
-
-<div
-  style={{
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(2,1fr)",
-    gap: "12px",
-    marginTop: "25px",
-  }}
->
-  <div
-    style={{
-      background: "#fff",
-      borderRadius: "22px",
-      padding: "18px",
-      boxShadow:
-        "0 8px 20px rgba(0,0,0,0.08)",
-    }}
-  >
-    <div
-      style={{
-        fontSize: "30px",
-      }}
-    >
-      🎂
-    </div>
-
-    <h4
-      style={{
-        margin:
-          "10px 0 5px",
-      }}
-    >
-      Birthdays
-    </h4>
-
-    <p
-      style={{
-        color: "#666",
-        margin: 0,
-      }}
-    >
-      {birthdays.length}
-      {" "}Today
-    </p>
-  </div>
-
-  <div
-    style={{
-      background: "#fff",
-      borderRadius: "22px",
-      padding: "18px",
-      boxShadow:
-        "0 8px 20px rgba(0,0,0,0.08)",
-    }}
-  >
-    <div
-      style={{
-        fontSize: "30px",
-      }}
-    >
-      🕯️
-    </div>
-
-    <h4
-      style={{
-        margin:
-          "10px 0 5px",
-      }}
-    >
-      Shraddhanjali
-    </h4>
-
-    <p
-      style={{
-        color: "#666",
-        margin: 0,
-      }}
-    >
-      {deathNotes.length}
-      {" "}Recent
-    </p>
-  </div>
-
-  <div
-    style={{
-      background: "#fff",
-      borderRadius: "22px",
-      padding: "18px",
-      boxShadow:
-        "0 8px 20px rgba(0,0,0,0.08)",
-    }}
-  >
-    <div
-      style={{
-        fontSize: "30px",
-      }}
-    >
-      💼
-    </div>
-
-    <h4
-      style={{
-        margin:
-          "10px 0 5px",
-      }}
-    >
-      Jobs
-    </h4>
-
-    <p
-      style={{
-        color: "#666",
-        margin: 0,
-      }}
-    >
-      {jobs.length}
-      {" "}Active
-    </p>
-  </div>
-
-  <div
-    style={{
-      background: "#fff",
-      borderRadius: "22px",
-      padding: "18px",
-      boxShadow:
-        "0 8px 20px rgba(0,0,0,0.08)",
-    }}
-  >
-    <div
-      style={{
-        fontSize: "30px",
-      }}
-    >
-      📢
-    </div>
-
-    <h4
-      style={{
-        margin:
-          "10px 0 5px",
-      }}
-    >
-      Updates
-    </h4>
-
-    <p
-      style={{
-        color: "#666",
-        margin: 0,
-      }}
-    >
-      {updates.length}
-      {" "}Latest
-    </p>
-  </div>
-</div>
+     <LatestCards
+  birthdays={birthdays}
+  deathNotes={deathNotes}
+  jobs={jobs}
+  updates={updates}
+/>
       {/* Admin Modal */}
 
       {showAdminLogin && (

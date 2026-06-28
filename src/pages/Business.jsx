@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { getLoggedFamily } from "../auth/Auth";
 import BottomNav from "../components/BottomNav";
 import { db } from "../firebase/config";
+import BusinessCard from "../components/business/BusinessCard"; 
+import BusinessHeader from "../components/business/BusinessHeader";
+import CategoryChips from "../components/business/CategoryChips";
+import FeaturedBusiness from "../components/business/FeaturedBusiness";
 
 import {
 collection,
@@ -24,6 +28,9 @@ useState([]);
 
 const [search, setSearch] =
 useState("");
+
+const [selectedCategory, setSelectedCategory] =
+  useState("All");
 
 useEffect(() => {
 fetchBusinesses();
@@ -56,25 +63,50 @@ collection(db, "businesses")
 
 };
 
+const categories = [
+  "All",
+  ...new Set(
+    businesses.map(
+      (b) => b.category
+    )
+  ),
+];
+
+const featuredBusiness =
+  businesses.find(
+    (b) => b.featured === true
+  );
+
 const filteredBusinesses =
-businesses.filter(
-(business) =>
-business.businessName
-?.toLowerCase()
-.includes(
-search.toLowerCase()
-) ||
-business.category
-?.toLowerCase()
-.includes(
-search.toLowerCase()
-) ||
-business.subCategory
-?.toLowerCase()
-.includes(
-search.toLowerCase()
-)
-);
+  businesses.filter((business) => {
+    const matchesSearch =
+      business.businessName
+        ?.toLowerCase()
+        .includes(
+          search.toLowerCase()
+        ) ||
+      business.category
+        ?.toLowerCase()
+        .includes(
+          search.toLowerCase()
+        ) ||
+      business.subCategory
+        ?.toLowerCase()
+        .includes(
+          search.toLowerCase()
+        );
+
+    const matchesCategory =
+      selectedCategory ===
+        "All" ||
+      business.category ===
+        selectedCategory;
+
+    return (
+      matchesSearch &&
+      matchesCategory
+    );
+  });
 
 return (
 <div
@@ -85,32 +117,23 @@ padding: "20px",
 paddingBottom: "120px",
 }}
 >
-<h1
-style={{
-color: "#1E88E5",
-fontSize: "28px",
-marginBottom: "8px",
-}}
->
-Business Directory </h1>
+<BusinessHeader
+  city={
+    loggedFamily?.city ||
+    loggedFamily?.village ||
+    "Gujarat"
+  }
+  total={filteredBusinesses.length}
+/>
 
-  <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
-    color: "#666",
-    marginBottom: "20px",
-  }}
->
-  <FaMapMarkerAlt color="#FF6B00" />
-
-  {loggedFamily
-    ? loggedFamily.city ||
-      loggedFamily.village ||
-      "Gujarat"
-    : "Gujarat"}
-</div>
+<FeaturedBusiness
+  business={featuredBusiness}
+/>
+<CategoryChips
+  categories={categories}
+  selected={selectedCategory}
+  onSelect={setSelectedCategory}
+/>
 
   {/* Search */}
 
@@ -167,156 +190,12 @@ Business Directory </h1>
       No Businesses Found
     </div>
   ) : (
-    filteredBusinesses.map(
-      (business) => (
-        <div
-          key={business.id}
-          onClick={() =>
-            navigate(
-              `/business/${business.id}`
-            )
-          }
-          style={{
-            background: "#fff",
-            borderRadius: "24px",
-            padding: "20px",
-            marginBottom: "16px",
-            boxShadow:
-              "0 10px 30px rgba(0,0,0,0.08)",
-            border:
-              "1px solid #F3F4F6",
-            cursor: "pointer",
-          }}
-        >
-          <h3
-            style={{
-              color:
-                "#1E88E5",
-              marginBottom:
-                "10px",
-              fontSize:
-                "18px",
-              fontWeight:
-                "700",
-            }}
-          >
-            {
-              business.businessName
-            }
-          </h3>
-
-          <div
-            style={{
-              display:
-                "inline-block",
-              background:
-                "#F3F4F6",
-              padding:
-                "6px 12px",
-              borderRadius:
-                "20px",
-              fontSize:
-                "12px",
-              marginBottom:
-                "10px",
-            }}
-          >
-            {
-              business.category
-            }
-          </div>
-
-          <p
-            style={{
-              color:
-                "#666",
-              marginBottom:
-                "6px",
-            }}
-          >
-            📍{" "}
-            {business.city}
-          </p>
-
-          <p
-            style={{
-              color:
-                "#888",
-              fontSize:
-                "13px",
-              marginBottom:
-                "12px",
-            }}
-          >
-            {
-              business.subCategory
-            }
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              gap: "10px",
-              marginTop: "15px",
-            }}
-          >
-            <a
-              href={`tel:${business.mobile}`}
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-              style={{
-                flex: 1,
-                textAlign:
-                  "center",
-                background:
-                  "#FF6B00",
-                color:
-                  "#fff",
-                padding:
-                  "10px",
-                borderRadius:
-                  "12px",
-                textDecoration:
-                  "none",
-                fontWeight:
-                  "600",
-              }}
-            >
-              📞 Call
-            </a>
-
-            <a
-              href={`https://wa.me/91${business.mobile}`}
-              target="_blank"
-              rel="noreferrer"
-              onClick={(e) =>
-                e.stopPropagation()
-              }
-              style={{
-                flex: 1,
-                textAlign:
-                  "center",
-                background:
-                  "#25D366",
-                color:
-                  "#fff",
-                padding:
-                  "10px",
-                borderRadius:
-                  "12px",
-                textDecoration:
-                  "none",
-                fontWeight:
-                  "600",
-              }}
-            >
-              💬 WhatsApp
-            </a>
-          </div>
-        </div>
-      )
-    )
+   filteredBusinesses.map((business) => (
+  <BusinessCard
+    key={business.id}
+    business={business}
+  />
+))
   )}
 
   <BottomNav />

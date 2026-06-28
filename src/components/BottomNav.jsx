@@ -1,10 +1,19 @@
-import { FaHome } from "react-icons/fa";
 import {
-  FaBuilding,
+  FaHome,
   FaHeart,
   FaTint,
 } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+
+import {
+  MdBusiness,
+} from "react-icons/md";
+
+import {
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
+import { Colors } from "../theme";
 
 function BottomNav() {
   const navigate = useNavigate();
@@ -13,22 +22,22 @@ function BottomNav() {
   const menus = [
     {
       title: "Home",
-      icon: <FaHome size={20} />,
+      icon: <FaHome />,
       path: "/",
     },
     {
       title: "Business",
-      icon: <FaBuilding size={20} />,
+      icon: <MdBusiness />,
       path: "/business",
     },
     {
       title: "Matrimony",
-      icon: <FaHeart size={20} />,
+      icon: <FaHeart />,
       path: "/matrimony",
     },
     {
       title: "Blood",
-      icon: <FaTint size={20} />,
+      icon: <FaTint />,
       path: "/blood",
     },
   ];
@@ -37,19 +46,29 @@ function BottomNav() {
     <div
       style={{
         position: "fixed",
-        bottom: "15px",
+        bottom: "18px",
         left: "50%",
         transform: "translateX(-50%)",
-        width: "95%",
+        width: "92%",
         maxWidth: "430px",
-        background: "#fff",
-        borderRadius: "22px",
+
+        background: "rgba(255,255,255,.96)",
+        backdropFilter: "blur(16px)",
+
+        borderRadius: "30px",
+
         display: "flex",
         justifyContent: "space-around",
         alignItems: "center",
-        padding: "12px 0",
+
+        padding: "12px",
+
         boxShadow:
-          "0 8px 25px rgba(0,0,0,0.15)",
+          "0 18px 45px rgba(0,0,0,.15)",
+
+        border:
+          "1px solid rgba(255,255,255,.6)",
+
         zIndex: 999,
       }}
     >
@@ -66,27 +85,56 @@ function BottomNav() {
             style={{
               flex: 1,
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              cursor: "pointer",
-              color: active
-                ? "#FF5A1F"
-                : "#777",
-              fontWeight: active
-                ? "700"
-                : "500",
+              justifyContent: "center",
             }}
           >
-            {item.icon}
-
-            <span
+            <div
               style={{
-                fontSize: "11px",
-                marginTop: "4px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+
+                padding: "12px 16px",
+
+                borderRadius: "18px",
+
+                transition: ".25s",
+
+                cursor: "pointer",
+
+                background: active
+                  ? Colors.gradientPrimary
+                  : "transparent",
+
+                color: active
+                  ? "#fff"
+                  : "#666",
+
+                minWidth: "76px",
               }}
             >
-              {item.title}
-            </span>
+              <div
+                style={{
+                  fontSize: active
+                    ? "22px"
+                    : "20px",
+                }}
+              >
+                {item.icon}
+              </div>
+
+              <span
+                style={{
+                  fontSize: "11px",
+                  marginTop: "5px",
+                  fontWeight: active
+                    ? "700"
+                    : "600",
+                }}
+              >
+                {item.title}
+              </span>
+            </div>
           </div>
         );
       })}

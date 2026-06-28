@@ -1,151 +1,153 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getLoggedFamily } from "../auth/Auth";
-import { useNavigate } from "react-router-dom";
+
 import {
   doc,
   getDoc,
   deleteDoc,
 } from "firebase/firestore";
 
-
-
 import { db } from "../firebase/config";
 
 import {
-FaPhoneAlt,
-FaWhatsapp,
-FaMapMarkerAlt,
-FaTag,
-FaUser,
-FaGlobe,
-FaEnvelope,
-FaShareAlt,
+  FaPhoneAlt,
+  FaWhatsapp,
+  FaMapMarkerAlt,
+  FaTag,
+  FaUser,
+  FaGlobe,
+  FaEnvelope,
+  FaShareAlt,
+  FaArrowLeft,
+  FaEdit,
+  FaTrash,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 function BusinessDetails() {
-const { id } = useParams();
-const navigate = useNavigate();
+  const { id } = useParams();
 
-const loggedFamily = getLoggedFamily();
+  const navigate = useNavigate();
 
-const [business, setBusiness] =
-useState(null);
+  const loggedFamily =
+    getLoggedFamily();
 
-useEffect(() => {
-loadBusiness();
-}, []);
+  const [business, setBusiness] =
+    useState(null);
 
-const loadBusiness = async () => {
-try {
-const docRef = doc(
-db,
-"businesses",
-id
-);
+  useEffect(() => {
+    loadBusiness();
+  }, []);
 
+  const loadBusiness =
+    async () => {
+      try {
+        const docRef = doc(
+          db,
+          "businesses",
+          id
+        );
 
-  const docSnap =
-    await getDoc(docRef);
+        const docSnap =
+          await getDoc(docRef);
 
-  if (docSnap.exists()) {
-    setBusiness({
-      id: docSnap.id,
-      ...docSnap.data(),
-    });
-  }
-} catch (error) {
-  console.log(error);
-}
+        if (docSnap.exists()) {
+          setBusiness({
+            id: docSnap.id,
+            ...docSnap.data(),
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
+const handleShare =
+  async () => {
+    const shareText = `
+${business.businessName}
 
-};
+Category : ${business.category}
 
-const handleShare = async () => {
-  const handleDelete = async () => {
-  const confirmDelete = window.confirm(
-    "Delete this business?"
-  );
+Mobile : ${business.mobile}
 
-  if (!confirmDelete) return;
+Shared via Lohana Clic
+`;
 
-  try {
-    await deleteDoc(
-      doc(db, "businesses", business.id)
-    );
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title:
+            business.businessName,
+          text: shareText,
+        });
+      } else {
+        await navigator.clipboard.writeText(
+          shareText
+        );
 
-    alert("Business Deleted");
+        alert(
+          "Business details copied."
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    navigate("/business");
-  } catch (error) {
-    console.log(error);
-    alert("Delete Failed");
-  }
-};
-const shareText =
-`${business.businessName}
+ 
 
-Category: ${business.category}
+const handleDelete =
+  async () => {
+    if (
+      !window.confirm(
+        "Delete this business?"
+      )
+    )
+      return;
 
-Mobile: ${business.mobile}
+    try {
+      await deleteDoc(
+        doc(
+          db,
+          "businesses",
+          business.id
+        )
+      );
 
-Shared via Lohana Clic`;
+      alert(
+        "Business Deleted Successfully"
+      );
 
+      navigate("/business");
+    } catch (error) {
+      console.log(error);
 
-try {
-  if (navigator.share) {
-    await navigator.share({
-      title:
-        business.businessName,
-      text: shareText,
-    });
-  } else {
-    navigator.clipboard.writeText(
-      shareText
-    );
+      alert(
+        "Unable to delete business."
+      );
+    }
+  };
 
-    alert(
-      "Business details copied"
-    );
-  }
-} catch (error) {
-  console.log(error);
-}
-
-
-};
-
-const handleDelete = async () => {
-  const confirmDelete = window.confirm(
-    "Delete this business?"
-  );
-
-  if (!confirmDelete) return;
-
-  try {
-    await deleteDoc(
-      doc(db, "businesses", business.id)
-    );
-
-    alert("Business Deleted Successfully");
-
-    navigate("/business");
-  } catch (error) {
-    console.log(error);
-    alert("Delete Failed");
-  }
-};
+ 
 
 if (!business) {
-return (
-<div
-style={{
-padding: "40px",
-textAlign: "center",
-}}
->
-Loading... </div>
-);
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent:
+          "center",
+        alignItems: "center",
+        height: "100vh",
+        fontSize: "18px",
+        fontWeight: "700",
+      }}
+    >
+      Loading...
+    </div>
+  );
 }
 
 return (
@@ -164,17 +166,37 @@ minHeight: "100vh",
 
 
   <div
-    style={{
-      background:
-        "linear-gradient(135deg,#1E88E5,#42A5F5)",
-      color: "#fff",
-      borderRadius: "28px",
-      padding: "25px",
-      marginBottom: "20px",
-      boxShadow:
-        "0 15px 35px rgba(30,136,229,0.25)",
-    }}
-  >
+  style={{
+    background:
+      "linear-gradient(135deg,#2D1B7E,#5B3DF5)",
+    color: "#fff",
+    borderRadius: "28px",
+    padding: "25px",
+    marginBottom: "20px",
+    boxShadow:
+      "0 15px 35px rgba(45,27,126,.25)",
+    position: "relative",
+    overflow: "hidden",
+  }}
+>
+   <button
+  onClick={() => navigate(-1)}
+  style={{
+    position: "absolute",
+    top: "15px",
+    left: "15px",
+    border: "none",
+    background: "rgba(255,255,255,.18)",
+    color: "#fff",
+    width: "42px",
+    height: "42px",
+    borderRadius: "50%",
+    cursor: "pointer",
+  }}
+>
+  <FaArrowLeft />
+</button>
+   
     <div
       style={{
         display:
@@ -191,13 +213,21 @@ minHeight: "100vh",
         fontWeight: "700",
       }}
     >
-      ✓ VERIFIED BUSINESS
+     <>
+  <FaCheckCircle /> Verified Business
+</>
     </div>
 
     <h1
       style={{
+        display: "flex",
+alignItems: "center",
+gap: "6px",
+width: "fit-content",
         margin: 0,
-        fontSize: "28px",
+        fontSize: "30px",
+        fontWeight:"800",
+letterSpacing:".4px",
         marginBottom: "10px",
       }}
     >
