@@ -73,6 +73,11 @@ function FamilyLogin() {
           ...data,
         });
 
+        console.log("Saved", {
+  id: family.id,
+  ...data,
+});
+
         alert(
           "Login Successful"
         );
