@@ -37,6 +37,9 @@ import Professionals from "./pages/Professionals";
 import EditBusiness from "./pages/EditBusiness";
 import Search from "./pages/Search";
 import Layout from "./components/Layout";
+import Profile from "./pages/Profile";
+import MyBusinesses from "./pages/MyBusinesses";
+
 
 
 
@@ -52,6 +55,21 @@ function App() {
         <Route
   path="/search"
   element={<Search />}
+/>
+
+<Route
+  path="/edit-family/:id"
+  element={<AddFamily />}
+/>
+
+<Route
+  path="/my-businesses"
+  element={<MyBusinesses />}
+/>
+
+<Route
+  path="/profile"
+  element={<Profile />}
 />
 
 
@@ -159,7 +177,7 @@ function App() {
   path="/add-member/:familyId"
   element={<AddMember />}
 />
-navigate(`/family/${loggedFamily.id}`);
+
 
 <Route
   path="/family-login"

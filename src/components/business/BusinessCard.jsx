@@ -7,10 +7,49 @@ import {
 } from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "../../firebase/config";
 import { Colors } from "../../theme";
 
-function BusinessCard({ business }) {
+function BusinessCard({
+  business,
+  ownerMode = false,
+}) {
   const navigate = useNavigate();
+  const handleDelete = async (
+  e
+) => {
+  e.stopPropagation();
+
+  if (
+    !window.confirm(
+      "Delete this business?"
+    )
+  )
+    return;
+
+  try {
+    await deleteDoc(
+      doc(
+        db,
+        "businesses",
+        business.id
+      )
+    );
+
+    alert(
+      "Business Deleted Successfully"
+    );
+
+    window.location.reload();
+  } catch (error) {
+    console.log(error);
+
+    alert(
+      "Error deleting business"
+    );
+  }
+};
 
   return (
     <div
@@ -147,55 +186,97 @@ function BusinessCard({ business }) {
           ?.substring(0, 80) || ""}
       </p>
 
-      {/* Buttons */}
-
       <div
+  style={{
+    display: "flex",
+    gap: "12px",
+  }}
+>
+  {ownerMode ? (
+    <>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+
+          navigate(
+            `/edit-business/${business.id}`
+          );
+        }}
         style={{
-          display: "flex",
-          gap: "12px",
+          flex: 1,
+          padding: "12px",
+          border: "none",
+          borderRadius: "14px",
+          background: "#2563EB",
+          color: "#fff",
+          fontWeight: "700",
+          cursor: "pointer",
         }}
       >
-        <a
-          href={`tel:${business.mobile}`}
-          onClick={(e) =>
-            e.stopPropagation()
-          }
-          style={{
-            flex: 1,
-            textAlign: "center",
-            background:
-              Colors.gradientOrange,
-            color: "#fff",
-            padding: "12px",
-            borderRadius: "14px",
-            textDecoration: "none",
-            fontWeight: "700",
-          }}
-        >
-          <FaPhoneAlt /> Call
-        </a>
+        ✏️ Edit
+      </button>
 
-        <a
-          href={`https://wa.me/91${business.mobile}`}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(e) =>
-            e.stopPropagation()
-          }
-          style={{
-            flex: 1,
-            textAlign: "center",
-            background: "#25D366",
-            color: "#fff",
-            padding: "12px",
-            borderRadius: "14px",
-            textDecoration: "none",
-            fontWeight: "700",
-          }}
-        >
-          <FaWhatsapp /> WhatsApp
-        </a>
-      </div>
+      <button
+        onClick={handleDelete}
+        style={{
+          flex: 1,
+          padding: "12px",
+          border: "none",
+          borderRadius: "14px",
+          background: "#DC2626",
+          color: "#fff",
+          fontWeight: "700",
+          cursor: "pointer",
+        }}
+      >
+        🗑 Delete
+      </button>
+    </>
+  ) : (
+    <>
+      <a
+        href={`tel:${business.mobile}`}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+        style={{
+          flex: 1,
+          textAlign: "center",
+          background:
+            Colors.gradientOrange,
+          color: "#fff",
+          padding: "12px",
+          borderRadius: "14px",
+          textDecoration: "none",
+          fontWeight: "700",
+        }}
+      >
+        <FaPhoneAlt /> Call
+      </a>
+
+      <a
+        href={`https://wa.me/91${business.mobile}`}
+        target="_blank"
+        rel="noreferrer"
+        onClick={(e) =>
+          e.stopPropagation()
+        }
+        style={{
+          flex: 1,
+          textAlign: "center",
+          background: "#25D366",
+          color: "#fff",
+          padding: "12px",
+          borderRadius: "14px",
+          textDecoration: "none",
+          fontWeight: "700",
+        }}
+      >
+        <FaWhatsapp /> WhatsApp
+      </a>
+    </>
+  )}
+</div>
     </div>
   );
 }

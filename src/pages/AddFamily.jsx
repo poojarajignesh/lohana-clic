@@ -1,17 +1,50 @@
-import { useState } from "react";
+
 import { db } from "../firebase/config";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 import {
-doc,
-getDoc,
-updateDoc,
-addDoc,
-collection,
-serverTimestamp,
+  doc,
+  getDoc,
+  updateDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
 } from "firebase/firestore";
 
 
 function AddFamily() {
+  const { id } = useParams();
+
+const navigate = useNavigate();
+
+const isEdit = !!id;
+useEffect(() => {
+  if (!isEdit) return;
+
+  loadFamily();
+}, []);
+
+const loadFamily = async () => {
+  try {
+    const docRef = doc(
+      db,
+      "families",
+      id
+    );
+
+    const docSnap =
+      await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      setFormData(
+        docSnap.data()
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
   const [formData, setFormData] =
     useState({
       district: "",
@@ -63,6 +96,44 @@ String(counter).padStart(
 "0"
 );
 
+if (isEdit) {
+  await updateDoc(
+    doc(db, "families", id),
+    {
+      ...formData,
+    }
+  );
+
+  alert(
+    "Family Updated Successfully"
+  );
+
+  navigate(
+    `/family/${id}`
+  );
+
+  return;
+}
+
+if (isEdit) {
+  await updateDoc(
+    doc(db, "families", id),
+    {
+      ...formData,
+    }
+  );
+
+  alert(
+    "Family Updated Successfully"
+  );
+
+  navigate(
+    `/family/${id}`
+  );
+
+  return;
+}
+
 await addDoc(
   collection(db, "families"),
   {
@@ -85,6 +156,10 @@ await updateDoc(
 alert(
   `Family Saved Successfully\n${familyId}`
 );
+
+navigate("/");
+
+
 
 
 } catch (error) {
@@ -291,7 +366,9 @@ alert(
             marginTop: "15px",
           }}
         >
-          Save Family
+         {isEdit
+  ? "Update Family"
+  : "Save Family"}
         </button>
       </form>
     </div>

@@ -45,16 +45,16 @@ collection(db, "businesses")
 
 
   const businessList =
-    querySnapshot.docs
-      .map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }))
-      .filter(
-        (business) =>
-          business.status ===
-          "Approved"
-      );
+  querySnapshot.docs
+    .map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    .filter(
+      (business) =>
+        business.ownerFamilyId ===
+          loggedFamily.familyId
+    );
 
   setBusinesses(businessList);
 } catch (error) {
@@ -119,21 +119,40 @@ paddingBottom: "120px",
 >
 <BusinessHeader
   city={
-    loggedFamily?.city ||
+    loggedFamily?.currentPlace ||
     loggedFamily?.village ||
     "Gujarat"
   }
   total={filteredBusinesses.length}
+  title="My Businesses"
 />
 
-<FeaturedBusiness
-  business={featuredBusiness}
-/>
+
 <CategoryChips
   categories={categories}
   selected={selectedCategory}
   onSelect={setSelectedCategory}
 />
+
+<button
+  onClick={() =>
+    navigate("/add-business")
+  }
+  style={{
+    width: "100%",
+    padding: "14px",
+    border: "none",
+    borderRadius: "16px",
+    background:
+      "#FF5A1F",
+    color: "#fff",
+    fontWeight: "700",
+    marginBottom: "20px",
+    cursor: "pointer",
+  }}
+>
+➕ Add New Business
+</button>
 
   {/* Search */}
 
@@ -194,7 +213,7 @@ paddingBottom: "120px",
   <BusinessCard
     key={business.id}
     business={business}
-    ownerMode={false}
+    ownerMode={true}
   />
 ))
   )}

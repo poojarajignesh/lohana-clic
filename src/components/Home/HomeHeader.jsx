@@ -7,39 +7,63 @@ import {
   FaUsers,
 } from "react-icons/fa";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   getLoggedFamily,
   logoutFamily,
 } from "../../auth/Auth";
-import { Colors } from "../../theme";
 
+import { Colors } from "../../theme";
 
 function HomeHeader() {
   const navigate = useNavigate();
 
-const [showMenu, setShowMenu] =
-  useState(false);
+  const menuRef = useRef(null);
 
-const loggedFamily =
-  getLoggedFamily();
+  const [showMenu, setShowMenu] = useState(false);
 
-const handleLogout = () => {
-  logoutFamily();
+  const loggedFamily = getLoggedFamily();
 
-  navigate("/family-login");
-};
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target)
+      ) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logoutFamily();
+    navigate("/family-login");
+  };
+
   return (
-   <div
-  style={{
-    background: Colors.gradientPrimary,
-    borderRadius: "22px",
-    padding: "22px",
-    color: "#fff",
-    boxShadow: Colors.shadow,
-  }}
->
+    <div
+      style={{
+        background: Colors.gradientPrimary,
+        borderRadius: 22,
+        padding: 22,
+        color: "#fff",
+        boxShadow: Colors.shadow,
+      }}
+    >
       <div
         style={{
           display: "flex",
@@ -47,133 +71,167 @@ const handleLogout = () => {
           alignItems: "center",
         }}
       >
+        {/* Left */}
         <div>
           <p
             style={{
               margin: 0,
               opacity: 0.9,
-              fontSize: "14px",
+              fontSize: 14,
             }}
           >
             Welcome Back 👋
           </p>
 
-         <h2
-  style={{
-    margin: "4px 0",
-    fontWeight: "800",
-    fontSize: "24px",
-  }}
->
-  {loggedFamily?.headName ||
-    "Lohana Member"}
-</h2>
+          <h2
+            style={{
+              margin: "4px 0",
+              fontWeight: 800,
+              fontSize: 24,
+            }}
+          >
+            {loggedFamily?.headName ||
+              "Lohana Member"}
+          </h2>
 
-<div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
-    opacity: .9,
-    fontSize: "13px",
-  }}
->
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              opacity: 0.9,
+              fontSize: 13,
+            }}
+          >
+            <FaMapMarkerAlt />
 
-  
-  <FaMapMarkerAlt />
-
-  {loggedFamily?.currentPlace ||
-  loggedFamily?.village ||
-  loggedFamily?.district ||
-  "Gujarat"}
-</div>
+            {loggedFamily?.currentPlace ||
+              loggedFamily?.village ||
+              loggedFamily?.district ||
+              "Gujarat"}
+          </div>
         </div>
 
+        {/* Right */}
         <div
           style={{
             display: "flex",
-            gap: "12px",
+            gap: 14,
             alignItems: "center",
           }}
         >
-          <FaBell
-            size={22}
-            style={{ cursor: "pointer" }}
-          />
+          {/* Notification */}
+          <div
+            style={{
+              cursor: "pointer",
+            }}
+          >
+            <FaBell size={21} />
+          </div>
 
-         <div
-  style={{
-    position: "relative",
-  }}
->
-  <div
-    onClick={() =>
-      setShowMenu(!showMenu)
-    }
-    style={{
-      width: "42px",
-      height: "42px",
-      borderRadius: "50%",
-      background:
-        "rgba(255,255,255,.18)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      cursor: "pointer",
-    }}
-  >
-    <FaUserCircle size={30} />
-  </div>
+          {/* Profile */}
+          <div
+            ref={menuRef}
+            style={{
+              position: "relative",
+            }}
+          >
+            <div
+              onClick={() =>
+                setShowMenu(!showMenu)
+              }
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background:
+                  "rgba(255,255,255,.18)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <FaUserCircle size={30} />
+            </div>
 
- {true && (
-    <div
-      style={{
-        position: "absolute",
-        right: 0,
-        top: "52px",
-        background: "#fff",
-        color: "#222",
-        width: "190px",
-        borderRadius: "16px",
-        overflow: "hidden",
-        boxShadow:
-          "0 15px 35px rgba(0,0,0,.15)",
-        zIndex: 999,
-      }}
-    >
-      <MenuItem
-        icon={<FaUserEdit />}
-        text="Edit Profile"
-        onClick={() =>
-          navigate("/edit-family")
-        }
-      />
+            {showMenu && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 52,
+                  right: 0,
+                  width: 220,
+                  background: "#fff",
+                  color: "#333",
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  boxShadow:
+                    "0 10px 30px rgba(0,0,0,.15)",
+                  zIndex: 999,
+                }}
+              >
+                <MenuItem
+                  icon={
+                    <FaUserCircle
+                      color={Colors.primary}
+                    />
+                  }
+                  text="My Profile"
+                  onClick={() => {
+                    setShowMenu(false);
+                    navigate("/profile");
+                  }}
+                />
 
-      <MenuItem
-        icon={<FaUsers />}
-        text="My Family"
-        onClick={() =>
-          navigate("/family")
-        }
-      />
+                <MenuItem
+                  icon={
+                    <FaUsers
+                      color={Colors.primary}
+                    />
+                  }
+                  text="Family Members"
+                  onClick={() => {
+                    setShowMenu(false);
+                    navigate("/family-members");
+                  }}
+                />
 
-      <MenuItem
-        icon={<FaSignOutAlt />}
-        text="Logout"
-        onClick={handleLogout}
-      />
-    </div>
-  )}
-</div>
+                <MenuItem
+                  icon={
+                    <FaUserEdit
+                      color={Colors.primary}
+                    />
+                  }
+                  text="Edit Profile"
+                  onClick={() => {
+                    setShowMenu(false);
+                    navigate("/edit-profile");
+                  }}
+                />
+
+                <MenuItem
+                  icon={
+                    <FaSignOutAlt color="red" />
+                  }
+                  text="Logout"
+                  onClick={handleLogout}
+                  isLast
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 function MenuItem({
   icon,
   text,
   onClick,
+  isLast = false,
 }) {
   return (
     <div
@@ -181,17 +239,35 @@ function MenuItem({
       style={{
         padding: "14px 18px",
         display: "flex",
-        gap: "10px",
-        cursor: "pointer",
         alignItems: "center",
-        borderBottom:
-          "1px solid #F3F4F6",
+        gap: 12,
+        cursor: "pointer",
+        borderBottom: isLast
+          ? "none"
+          : "1px solid #f1f5f9",
+        transition: ".2s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background =
+          "#F8FAFC";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background =
+          "#fff";
       }}
     >
       {icon}
 
-      {text}
+      <span
+        style={{
+          fontSize: 14,
+          fontWeight: 500,
+        }}
+      >
+        {text}
+      </span>
     </div>
   );
 }
+
 export default HomeHeader;

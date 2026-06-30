@@ -18,7 +18,7 @@ import HomeHeader from "../components/home/HomeHeader";
 import { db } from "../firebase/config";
 import AdvertisementSlider from "../components/AdvertisementSlider";
 import { useNavigate } from "react-router-dom";
-import BottomNav from "../components/BottomNav";
+
 import logo from "../assets/logo.png";
 
 import LatestCards from "../components/home/LatestCards";
@@ -432,7 +432,7 @@ const fetchCounts =
         </div>
       )}
 
-      <BottomNav />
+      
     </div>
   );
 }

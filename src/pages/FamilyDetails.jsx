@@ -273,7 +273,7 @@ function FamilyDetails() {
         />
       </div>
 
-    /members/${family.familyId}`
+    
 
 <button
   onClick={() =>
@@ -290,6 +290,25 @@ function FamilyDetails() {
     cursor: "pointer",
   }}
 >
+
+  <button
+  onClick={() =>
+    navigate(`/edit-family/${family.id}`)
+  }
+  style={{
+    width: "100%",
+    padding: "15px",
+    border: "none",
+    borderRadius: "16px",
+    background: "#2563EB",
+    color: "#fff",
+    fontWeight: "700",
+    cursor: "pointer",
+    marginBottom: "12px",
+  }}
+>
+  ✏️ Edit Family
+</button>
   👥 View Members
 </button>
     </div>

@@ -65,12 +65,16 @@ function BusinessDetails() {
 
 const handleShare =
   async () => {
-    const shareText = `
-${business.businessName}
+   const shareText = `
+🏢 ${business.businessName}
 
-Category : ${business.category}
+📂 Category : ${business.category}
 
-Mobile : ${business.mobile}
+📞 Mobile : ${business.mobile}
+
+📍 Address : ${business.address}
+
+🌐 Website : ${business.website || "Not Available"}
 
 Shared via Lohana Clic
 `;
@@ -120,7 +124,7 @@ const handleDelete =
         "Business Deleted Successfully"
       );
 
-      navigate("/business");
+      navigate("/my-businesses");
     } catch (error) {
       console.log(error);
 
@@ -214,7 +218,13 @@ minHeight: "100vh",
       }}
     >
      <>
-  <FaCheckCircle /> Verified Business
+  {business.status === "Approved" ? (
+  <>
+    <FaCheckCircle /> Verified Business
+  </>
+) : (
+  <>🟡 Pending Approval</>
+)}
 </>
     </div>
 
@@ -381,11 +391,14 @@ letterSpacing:".4px",
     </a>
 
     <a
-      href={
-        business.website
-          ? business.website
-          : "#"
-      }
+     href={business.website || undefined}
+
+onClick={(e) => {
+  if (!business.website) {
+    e.preventDefault();
+    alert("Website not available");
+  }
+}}
       target="_blank"
       rel="noreferrer"
       style={buttonStyleBlue}
