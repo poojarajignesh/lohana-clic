@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import { db } from "../firebase/config";
 
+
 import {
   addDoc,
   collection,
@@ -28,6 +29,7 @@ const [uploading, setUploading] =
     education: "",
     occupation: "",
     maritalStatus: "",
+    currentPlace: "",
 
     gender: "",
     height: "",
