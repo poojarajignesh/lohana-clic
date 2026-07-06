@@ -1,373 +1,394 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { db } from "../firebase/config";
+
+import BloodDonorCard from "../components/blood/BloodDonorCard";
+import BloodRequestCard from "../components/blood/BloodRequestCard";
 
 import {
   collection,
   getDocs,
 } from "firebase/firestore";
 
+import { FaTint } from "react-icons/fa";
+
+
 function Blood() {
-  const [donors, setDonors] =
-    useState([]);
 
-  const [search, setSearch] =
-    useState("");
+const navigate = useNavigate();
 
-  const [bloodGroup, setBloodGroup] =
-    useState("");
+const [donors, setDonors] =
+useState([]);
 
-  useEffect(() => {
-    fetchDonors();
-  }, []);
-  const fetchRequests =
-  async () => {
-    try {
-      const querySnapshot =
-        await getDocs(
-          collection(
-            db,
-            "bloodRequests"
-          )
-        );
+const [requests, setRequests] =
+useState([]);
 
-      const requestList =
-        querySnapshot.docs
-          .map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          .filter(
-            (request) =>
-              request.status ===
-              "Approved"
-          );
+const [search, setSearch] =
+useState("");
 
-      setRequests(
-        requestList
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+const [bloodGroup, setBloodGroup] =
+useState("");
 
-  const fetchDonors =
-    async () => {
-      try {
-        const querySnapshot =
-          await getDocs(
-            collection(
-              db,
-              "members"
-            )
-          );
 
-        const donorList =
-          querySnapshot.docs
-            .map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }))
-            .filter(
-              (member) =>
-                member.isBloodDonor ===
-                true
-            );
+useEffect(() => {
 
-        setDonors(
-          donorList
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    };
+fetchDonors();
+fetchRequests();
 
-  const filteredDonors =
-    donors.filter(
-      (donor) =>
-        (bloodGroup === "" ||
-          donor.bloodGroup ===
-            bloodGroup) &&
-        (donor.fullName
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-          donor.village
-            ?.toLowerCase()
-            .includes(
-              search.toLowerCase()
-            ))
-    );
+}, []);
 
-  return (
-    <div
-      style={{
-        maxWidth: "430px",
-        margin: "0 auto",
-        padding: "20px",
-        background:
-          "#F8FAFC",
-        minHeight: "100vh",
-      }}
-    >
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg,#DC2626,#EF4444)",
-          color: "#fff",
-          padding: "25px",
-          borderRadius: "24px",
-          marginBottom: "20px",
-        }}
-      >
-        <h1
-          style={{
-            margin: 0,
-          }}
-        >
-          Blood Donors
-        </h1>
 
-        <p
-          style={{
-            marginTop: "8px",
-          }}
-        >
-          Find Blood Donors
-        </p>
-      </div>
+const fetchRequests =
+async () => {
 
-      <input
-        type="text"
-        placeholder="Search Name or Village"
-        value={search}
-        onChange={(e) =>
-          setSearch(
-            e.target.value
-          )
-        }
-        style={{
-          width: "100%",
-          padding: "14px",
-          borderRadius: "14px",
-          border:
-            "1px solid #ddd",
-          marginBottom: "15px",
-        }}
-      />
+try {
 
-      <select
-        value={bloodGroup}
-        onChange={(e) =>
-          setBloodGroup(
-            e.target.value
-          )
-        }
-        style={{
-          width: "100%",
-          padding: "14px",
-          borderRadius: "14px",
-          border:
-            "1px solid #ddd",
-          marginBottom: "20px",
-        }}
-      >
-        <option value="">
-          All Blood Groups
-        </option>
+const snap =
+await getDocs(
+collection(db,"bloodRequests")
+);
 
-        <option value="A+">
-          A+
-        </option>
-        <option value="A-">
-          A-
-        </option>
-        <option value="B+">
-          B+
-        </option>
-        <option value="B-">
-          B-
-        </option>
-        <option value="AB+">
-          AB+
-        </option>
-        <option value="AB-">
-          AB-
-        </option>
-        <option value="O+">
-          O+
-        </option>
-        <option value="O-">
-          O-
-        </option>
-      </select>
+const data =
+snap.docs
+.map((doc)=>({
+id:doc.id,
+...doc.data(),
+}))
+.filter(
+(r)=>r.status==="Approved"
+);
 
-      <p
-        style={{
-          fontWeight: "600",
-          marginBottom: "15px",
-        }}
-      >
-        Total Donors :
-        {filteredDonors.length}
-      </p>
+setRequests(data);
 
-      {filteredDonors.map(
-        (donor) => (
-          <div
-            key={donor.id}
-            style={{
-              background:
-                "#fff",
-              borderRadius:
-                "20px",
-              padding: "20px",
-              marginBottom:
-                "15px",
-              boxShadow:
-                "0 8px 20px rgba(0,0,0,0.08)",
-            }}
-          >
-            <div
-              style={{
-                display:
-                  "flex",
-                gap: "15px",
-                alignItems:
-                  "center",
-              }}
-            >
-              {donor.photoUrl ? (
-                <img
-                  src={
-                    donor.photoUrl
-                  }
-                  alt=""
-                  style={{
-                    width:
-                      "70px",
-                    height:
-                      "70px",
-                    borderRadius:
-                      "50%",
-                    objectFit:
-                      "cover",
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width:
-                      "70px",
-                    height:
-                      "70px",
-                    borderRadius:
-                      "50%",
-                    background:
-                      "#F3F4F6",
-                    display:
-                      "flex",
-                    justifyContent:
-                      "center",
-                    alignItems:
-                      "center",
-                    fontWeight:
-                      "700",
-                    fontSize:
-                      "24px",
-                  }}
-                >
-                  {donor.fullName?.charAt(
-                    0
-                  )}
-                </div>
-              )}
-
-              <div>
-                <h3
-                  style={{
-                    margin: 0,
-                  }}
-                >
-                  {
-                    donor.fullName
-                  }
-                </h3>
-
-                <p>
-                  🩸{" "}
-                  {
-                    donor.bloodGroup
-                  }
-                </p>
-
-                <p>
-                  📍{" "}
-                  {
-                    donor.village
-                  }
-                </p>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display:
-                  "flex",
-                gap: "10px",
-                marginTop:
-                  "15px",
-              }}
-            >
-              <a
-                href={`tel:${donor.mobile}`}
-                style={{
-                  flex: 1,
-                  textAlign:
-                    "center",
-                  padding:
-                    "12px",
-                  background:
-                    "#DC2626",
-                  color:
-                    "#fff",
-                  textDecoration:
-                    "none",
-                  borderRadius:
-                    "12px",
-                }}
-              >
-                Call
-              </a>
-
-              <a
-                href={`https://wa.me/91${donor.mobile}`}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  flex: 1,
-                  textAlign:
-                    "center",
-                  padding:
-                    "12px",
-                  background:
-                    "#22C55E",
-                  color:
-                    "#fff",
-                  textDecoration:
-                    "none",
-                  borderRadius:
-                    "12px",
-                }}
-              >
-                WhatsApp
-              </a>
-            </div>
-          </div>
-        )
-      )}
-    </div>
-  );
 }
+catch(e){
+
+console.log(e);
+
+}
+
+};
+
+
+const fetchDonors =
+async () => {
+
+try {
+
+const snap =
+await getDocs(
+collection(db,"members")
+);
+
+const data =
+snap.docs
+.map((doc)=>({
+id:doc.id,
+...doc.data(),
+}))
+.filter(
+(m)=>m.isBloodDonor===true
+);
+
+setDonors(data);
+
+}
+catch(e){
+
+console.log(e);
+
+}
+
+};
+
+
+const filteredDonors =
+donors.filter(
+(d)=>
+
+(
+bloodGroup==="" ||
+d.bloodGroup===bloodGroup
+)
+
+&&
+
+(
+d.fullName
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+)
+
+||
+
+d.village
+?.toLowerCase()
+.includes(
+search.toLowerCase()
+)
+
+)
+
+);
+return (
+
+<div
+style={{
+maxWidth:"430px",
+margin:"0 auto",
+padding:"20px",
+paddingBottom:"100px",
+background:"#F8FAFC",
+minHeight:"100vh",
+}}
+>
+
+
+{/* HEADER */}
+
+
+<div
+style={{
+background:
+"linear-gradient(135deg,#DC2626,#EF4444)",
+color:"#fff",
+padding:"28px",
+borderRadius:"28px",
+marginBottom:"20px",
+boxShadow:
+"0 15px 35px rgba(220,38,38,.25)",
+}}
+>
+
+<h1
+style={{
+margin:0,
+display:"flex",
+alignItems:"center",
+gap:"12px",
+fontSize:"30px",
+fontWeight:"900",
+}}
+>
+
+<FaTint/>
+
+Blood Donors
+
+</h1>
+
+
+<p>
+Find Blood Donors
+</p>
+
+</div>
+
+
+
+{/* NEED BLOOD BUTTON */}
+
+
+<button
+
+onClick={() =>
+navigate(
+"/add-blood-request"
+)
+}
+
+style={{
+width:"100%",
+padding:"18px",
+border:"none",
+borderRadius:"22px",
+background:
+"linear-gradient(135deg,#EF4444,#DC2626)",
+color:"#fff",
+fontWeight:"900",
+fontSize:"17px",
+cursor:"pointer",
+marginBottom:"25px",
+boxShadow:
+"0 15px 35px rgba(220,38,38,.25)",
+}}
+
+>
+
+🚨 Need Blood?
+<br/>
+
+Create Emergency Request
+
+</button>
+
+
+
+
+{/* SEARCH */}
+
+
+<input
+
+type="text"
+
+placeholder=
+"Search Name or Village"
+
+value={search}
+
+onChange={(e)=>
+setSearch(
+e.target.value
+)
+}
+
+style={{
+width:"100%",
+padding:"15px",
+borderRadius:"18px",
+border:"1px solid #ddd",
+marginBottom:"15px",
+}}
+
+/>
+
+
+
+
+{/* BLOOD FILTER */}
+
+
+<select
+
+value={bloodGroup}
+
+onChange={(e)=>
+setBloodGroup(
+e.target.value
+)
+}
+
+style={{
+width:"100%",
+padding:"15px",
+borderRadius:"18px",
+border:"1px solid #ddd",
+marginBottom:"25px",
+}}
+
+>
+
+<option value="">
+All Blood Groups
+</option>
+
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+
+</select>
+
+
+
+
+{/* EMERGENCY */}
+
+
+{requests.length > 0 && (
+
+<>
+
+<h2
+style={{
+color:"#DC2626",
+}}
+>
+
+🚨 Emergency Needs
+
+</h2>
+
+
+{requests.map(
+(r)=>(
+
+<BloodRequestCard
+
+key={r.id}
+
+request={r}
+
+/>
+
+)
+
+)}
+
+</>
+
+)}
+
+
+
+
+<h3>
+
+🩸 Total Donors :
+{" "}
+{filteredDonors.length}
+
+</h3>
+
+
+
+
+{filteredDonors.map(
+(d)=>(
+
+<BloodDonorCard
+
+key={d.id}
+
+donor={d}
+
+/>
+
+)
+
+)}
+
+
+
+{filteredDonors.length===0 && (
+
+<p
+style={{
+textAlign:"center",
+color:"#777",
+}}
+>
+
+No Donors Found
+
+</p>
+
+)}
+
+
+
+</div>
+
+);
+
+}
+
 
 export default Blood;

@@ -9,308 +9,558 @@ import {
 } from "firebase/firestore";
 
 import {
-  FaPhoneAlt,
-  FaWhatsapp,
+  FaArrowLeft,
+  FaCheckCircle,
   FaGraduationCap,
   FaBriefcase,
-  FaRulerVertical,
+  FaPhoneAlt,
+  FaWhatsapp,
+  FaShareAlt,
+  FaUser,
   FaTint,
-  FaUsers,
+  FaBirthdayCake,
 } from "react-icons/fa";
 
+
 function MatrimonyDetails() {
-  const { id } = useParams();
-  const navigate = useNavigate();
 
-  const [profile, setProfile] =
-    useState(null);
+const { id } = useParams();
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
+const navigate =
+  useNavigate();
 
-  const loadProfile = async () => {
-    try {
-      const docRef = doc(
-        db,
-        "members",
-        id
-      );
+const [profile, setProfile] =
+  useState(null);
 
-      const docSnap =
-        await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        setProfile({
-          id: docSnap.id,
-          ...docSnap.data(),
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+useEffect(() => {
+  loadProfile();
+}, []);
 
-  const calculateAge = (
-    dob
-  ) => {
-    if (!dob) return "-";
 
-    try {
-      const parts =
-        dob.split("/");
+const loadProfile =
+async () => {
 
-      const birthDate =
-        new Date(
-          parts[2],
-          parts[1] - 1,
-          parts[0]
-        );
+try {
 
-      const today =
-        new Date();
+const docRef = doc(
+  db,
+  "members",
+  id
+);
 
-      let age =
-        today.getFullYear() -
-        birthDate.getFullYear();
+const snap =
+  await getDoc(docRef);
 
-      const monthDiff =
-        today.getMonth() -
-        birthDate.getMonth();
+if (snap.exists()) {
 
-      if (
-        monthDiff < 0 ||
-        (monthDiff === 0 &&
-          today.getDate() <
-            birthDate.getDate())
-      ) {
-        age--;
-      }
+setProfile({
+  id: snap.id,
+  ...snap.data(),
+});
 
-      return age;
-    } catch {
-      return "-";
-    }
-  };
-
-  if (!profile) {
-    return (
-      <div
-        style={{
-          padding: "40px",
-          textAlign: "center",
-        }}
-      >
-        Loading...
-      </div>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        maxWidth: "430px",
-        margin: "0 auto",
-        padding: "20px",
-        minHeight: "100vh",
-        background: "#F8FAFC",
-      }}
-    >
-      {/* Header */}
-
-      <div
-        style={{
-          background:
-            "linear-gradient(135deg,#1E88E5,#42A5F5)",
-          borderRadius: "28px",
-          padding: "25px",
-          textAlign: "center",
-          color: "#fff",
-          marginBottom: "20px",
-        }}
-      >
-        {profile.photoUrl ? (
-          <img
-            src={profile.photoUrl}
-            alt=""
-            style={{
-              width: "110px",
-              height: "110px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              border:
-                "4px solid #fff",
-              marginBottom: "15px",
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: "110px",
-              height: "110px",
-              borderRadius: "50%",
-              background: "#fff",
-              color: "#1E88E5",
-              display: "flex",
-              alignItems: "center",
-              justifyContent:
-                "center",
-              margin:
-                "0 auto 15px",
-              fontSize: "40px",
-              fontWeight: "700",
-            }}
-          >
-            {profile.fullName?.charAt(
-              0
-            )}
-          </div>
-        )}
-
-        <h2
-          style={{
-            margin: 0,
-          }}
-        >
-          {profile.fullName}
-        </h2>
-
-        <p
-          style={{
-            marginTop: "8px",
-          }}
-        >
-          {profile.gender ||
-            "Not Specified"}{" "}
-          •{" "}
-          {calculateAge(
-            profile.dob
-          )}{" "}
-          Years
-        </p>
-      </div>
-
-      {/* Details Card */}
-
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "24px",
-          padding: "20px",
-          boxShadow:
-            "0 10px 25px rgba(0,0,0,0.08)",
-          marginBottom: "20px",
-        }}
-      >
-        <p>
-          <FaGraduationCap />{" "}
-          <b>Education:</b>{" "}
-          {profile.education ||
-            "-"}
-        </p>
-
-        <p>
-          <FaBriefcase />{" "}
-          <b>Occupation:</b>{" "}
-          {profile.occupation ||
-            "-"}
-        </p>
-
-        <p>
-          <FaTint />{" "}
-          <b>Blood Group:</b>{" "}
-          {profile.bloodGroup ||
-            "-"}
-        </p>
-
-        <p>
-          <FaRulerVertical />{" "}
-          <b>Height:</b>{" "}
-          {profile.height ||
-            "-"}
-        </p>
-
-        <p>
-          <b>Relation:</b>{" "}
-          {profile.relation ||
-            "-"}
-        </p>
-
-        <p>
-          <b>Family ID:</b>{" "}
-          {profile.familyId ||
-            "-"}
-        </p>
-      </div>
-
-      {/* Buttons */}
-
-      <div
-        style={{
-          display: "grid",
-          gap: "12px",
-        }}
-      >
-        <a
-          href={`tel:${profile.mobile}`}
-          style={{
-            background:
-              "#FF6B00",
-            color: "#fff",
-            textDecoration:
-              "none",
-            padding: "14px",
-            borderRadius: "14px",
-            textAlign: "center",
-            fontWeight: "700",
-          }}
-        >
-          <FaPhoneAlt /> Call
-        </a>
-
-        <a
-          href={`https://wa.me/91${profile.mobile}`}
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            background:
-              "#25D366",
-            color: "#fff",
-            textDecoration:
-              "none",
-            padding: "14px",
-            borderRadius: "14px",
-            textAlign: "center",
-            fontWeight: "700",
-          }}
-        >
-          <FaWhatsapp /> WhatsApp
-        </a>
-
-        {profile.familyDocId && (
-          <button
-            onClick={() =>
-              navigate(
-                `/family/${profile.familyDocId}`
-              )
-            }
-            style={{
-              border: "none",
-              background:
-                "#1E88E5",
-              color: "#fff",
-              padding: "14px",
-              borderRadius: "14px",
-              fontWeight: "700",
-              cursor: "pointer",
-            }}
-          >
-            <FaUsers /> View Family
-          </button>
-        )}
-      </div>
-    </div>
-  );
 }
+
+} catch(error) {
+
+console.log(error);
+
+}
+
+};
+
+
+const calculateAge =
+(dob) => {
+
+if (!dob) return "-";
+
+try {
+
+const p =
+dob.split("/");
+
+const birth =
+new Date(
+  p[2],
+  p[1]-1,
+  p[0]
+);
+
+const today =
+new Date();
+
+let age =
+today.getFullYear()
+-
+birth.getFullYear();
+
+return age;
+
+} catch {
+
+return "-";
+
+}
+
+};
+
+
+const shareProfile =
+async () => {
+
+const text =
+`
+${profile.fullName}
+
+Education:
+${profile.education}
+
+Occupation:
+${profile.occupation}
+
+Shared via Lohana Clic
+`;
+
+if(navigator.share){
+
+await navigator.share({
+text,
+});
+
+}else{
+
+navigator.clipboard.writeText(
+text
+);
+
+alert(
+"Biodata copied"
+);
+
+}
+
+};
+
+
+if(!profile){
+
+return (
+<div
+style={{
+height:"100vh",
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+fontWeight:"700",
+}}
+>
+Loading...
+</div>
+);
+
+}
+
+
+return (
+
+<div
+style={{
+maxWidth:"430px",
+margin:"0 auto",
+padding:"20px",
+background:"#F8FAFC",
+minHeight:"100vh",
+paddingBottom:"40px",
+}}
+>
+
+
+{/* HEADER */}
+
+<div
+style={{
+background:
+"linear-gradient(135deg,#2563EB,#60A5FA)",
+borderRadius:"30px",
+padding:"25px",
+color:"#fff",
+textAlign:"center",
+position:"relative",
+marginBottom:"20px",
+}}
+>
+
+<button
+onClick={() =>
+navigate(-1)
+}
+style={{
+position:"absolute",
+left:"15px",
+top:"15px",
+border:"none",
+width:"40px",
+height:"40px",
+borderRadius:"50%",
+background:
+"rgba(255,255,255,.2)",
+color:"#fff",
+}}
+>
+
+<FaArrowLeft/>
+
+</button>
+
+
+{profile.photoUrl ? (
+
+<img
+src={profile.photoUrl}
+alt=""
+style={{
+width:"110px",
+height:"110px",
+borderRadius:"50%",
+objectFit:"cover",
+border:"5px solid white",
+}}
+/>
+
+):(
+
+<div
+style={{
+width:"110px",
+height:"110px",
+borderRadius:"50%",
+background:"#fff",
+color:"#2563EB",
+margin:"0 auto",
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+fontSize:"40px",
+fontWeight:"800",
+}}
+>
+
+{profile.fullName?.charAt(0)}
+
+</div>
+
+)}
+
+
+<h2>
+{profile.fullName}
+</h2>
+
+
+<p>
+{calculateAge(profile.dob)}
+ Years • 
+ {profile.gender}
+</p>
+
+
+<div
+style={{
+display:"inline-flex",
+gap:"8px",
+alignItems:"center",
+background:
+"rgba(255,255,255,.2)",
+padding:"8px 15px",
+borderRadius:"30px",
+fontWeight:"700",
+}}
+>
+
+<FaCheckCircle/>
+
+Verified Biodata
+
+</div>
+
+</div>
+{/* PERSONAL DETAILS */}
+
+<Section title="Personal Details">
+
+<Info
+ icon={<FaBirthdayCake/>}
+ label="Date Of Birth"
+ value={profile.dob}
+/>
+
+<Info
+ icon={<FaUser/>}
+ label="Height"
+ value={profile.height}
+/>
+
+<Info
+ icon={<FaUser/>}
+ label="Marital Status"
+ value={
+  profile.maritalStatus ||
+  "-"
+ }
+/>
+
+<Info
+ icon={<FaTint/>}
+ label="Blood Group"
+ value={
+  profile.bloodGroup ||
+  "-"
+ }
+/>
+
+</Section>
+
+
+
+{/* EDUCATION */}
+
+<Section title="Education & Career">
+
+<Info
+ icon={<FaGraduationCap/>}
+ label="Education"
+ value={
+ profile.education ||
+ "-"
+ }
+/>
+
+<Info
+ icon={<FaBriefcase/>}
+ label="Occupation"
+ value={
+ profile.occupation ||
+ "-"
+ }
+/>
+
+</Section>
+
+
+
+{/* FAMILY */}
+
+<Section title="Family Information">
+
+<Info
+ icon={<FaUser/>}
+ label="Relation"
+ value={
+ profile.relation ||
+ "-"
+ }
+/>
+
+<Info
+ icon={<FaUser/>}
+ label="Family ID"
+ value={
+ profile.familyId ||
+ "-"
+ }
+/>
+
+</Section>
+
+
+
+{/* CONTACT BUTTONS */}
+
+<div
+style={{
+display:"grid",
+gridTemplateColumns:
+"1fr 1fr",
+gap:"12px",
+marginBottom:"15px",
+}}
+>
+
+<a
+href={`tel:${profile.mobile}`}
+style={btnBlue}
+>
+<FaPhoneAlt/>
+Call
+</a>
+
+
+<a
+href={`https://wa.me/91${profile.mobile}`}
+target="_blank"
+rel="noreferrer"
+style={btnGreen}
+>
+<FaWhatsapp/>
+WhatsApp
+</a>
+
+</div>
+
+
+<button
+onClick={shareProfile}
+style={{
+width:"100%",
+padding:"15px",
+border:"none",
+borderRadius:"18px",
+background:
+"linear-gradient(135deg,#FF6B00,#FF8C42)",
+color:"#fff",
+fontWeight:"700",
+fontSize:"16px",
+cursor:"pointer",
+}}
+>
+
+<FaShareAlt/>
+{" "}
+Share Biodata
+
+</button>
+
+
+</div>
+
+);
+
+}
+
+
+
+/* COMPONENTS */
+
+function Section({
+title,
+children
+}){
+
+return (
+
+<div
+style={{
+background:"#fff",
+borderRadius:"24px",
+padding:"20px",
+marginBottom:"18px",
+boxShadow:
+"0 10px 25px rgba(0,0,0,.08)",
+}}
+>
+
+<h3
+style={{
+marginTop:0,
+color:"#2563EB",
+}}
+>
+{title}
+</h3>
+
+{children}
+
+</div>
+
+);
+
+}
+
+
+function Info({
+icon,
+label,
+value
+}){
+
+return (
+
+<div
+style={{
+display:"flex",
+gap:"12px",
+marginBottom:"14px",
+alignItems:"center",
+}}
+>
+
+<div
+style={{
+color:"#2563EB",
+fontSize:"20px",
+}}
+>
+{icon}
+</div>
+
+
+<div>
+
+<div
+style={{
+fontSize:"12px",
+color:"#64748B",
+}}
+>
+{label}
+</div>
+
+
+<div
+style={{
+fontWeight:"700",
+color:"#1E293B",
+}}
+>
+{value || "-"}
+</div>
+
+</div>
+
+</div>
+
+);
+
+}
+
+
+const btnBlue = {
+background:"#2563EB",
+color:"#fff",
+textDecoration:"none",
+padding:"14px",
+borderRadius:"16px",
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+gap:"8px",
+fontWeight:"700",
+};
+
+
+const btnGreen = {
+background:"#25D366",
+color:"#fff",
+textDecoration:"none",
+padding:"14px",
+borderRadius:"16px",
+display:"flex",
+justifyContent:"center",
+alignItems:"center",
+gap:"8px",
+fontWeight:"700",
+};
+
 
 export default MatrimonyDetails;

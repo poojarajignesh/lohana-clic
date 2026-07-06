@@ -3,236 +3,599 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import AdminBloodRequests from "./pages/AdminBloodRequests";
-import FamilyDetails from "./pages/FamilyDetails";
+
+
+import ProtectedRoute
+from "./components/ProtectedRoute";
+
+
+import Layout
+from "./components/Layout";
+
+
+// USER PAGES
+
 import Home from "./pages/Home";
 import Business from "./pages/Business";
+import BusinessDetails from "./pages/BusinessDetails";
+
 import Matrimony from "./pages/Matrimony";
+import MatrimonyDetails from "./pages/MatrimonyDetails";
+
 import Blood from "./pages/Blood";
 import Families from "./pages/Families";
 import Jobs from "./pages/Jobs";
-import AddBusiness from "./pages/AddBusiness";
-import BusinessDetails from "./pages/BusinessDetails";
-import Admin from "./pages/Admin";
-import AddFamily from "./pages/AddFamily";
-import FamilyLogin from "./pages/FamilyLogin";
-import AddMember from "./pages/AddMember";
-import FamilyMembers from "./pages/FamilyMembers";
-import EditMember from "./pages/EditMember";
-import MatrimonyDetails from "./pages/MatrimonyDetails";
-import AddBloodRequest from "./pages/AddBloodRequest";
-import AddJob from "./pages/AddJob";
-import AdminJobs from "./pages/AdminJobs";
-import AddUpdate from "./pages/AddUpdate";  
+
 import Updates from "./pages/Updates";
-import AdminUpdates from "./pages/AdminUpdates";
-import Birthdays from "./pages/Birthdays";
-import AddDeathNote from "./pages/AddDeathNote";
-import DeathNotes from "./pages/DeathNotes";
-import AdminDeathNotes from "./pages/AdminDeathNotes";
-import AdminDashboard from "./pages/AdminDashboard";
-import AddAdvertisement from "./pages/AddAdvertisement";
-import AddProfessional from "./pages/AddProfessional";
-import Professionals from "./pages/Professionals";
-import EditBusiness from "./pages/EditBusiness";
-import Search from "./pages/Search";
-import Layout from "./components/Layout";
+
 import Profile from "./pages/Profile";
-import MyBusinesses from "./pages/MyBusinesses";
+import Search from "./pages/Search";
 
 
+// LOGIN / FAMILY
+
+import FamilyLogin
+from "./pages/FamilyLogin";
+
+import AddFamily
+from "./pages/AddFamily";
+
+import AddMember
+from "./pages/AddMember";
+
+import FamilyMembers
+from "./pages/FamilyMembers";
+
+import EditMember
+from "./pages/EditMember";
 
 
+// ADD PAGES
 
-function App() {
-  return (
-    <BrowserRouter>
-    <Layout>
-      <Routes>
+import AddBusiness
+from "./pages/AddBusiness";
 
-        <Route path="/" element={<Home />} />
+import EditBusiness
+from "./pages/EditBusiness";
 
-        <Route
-  path="/search"
-  element={<Search />}
-/>
+import AddBloodRequest
+from "./pages/AddBloodRequest";
 
-<Route
-  path="/edit-family/:id"
-  element={<AddFamily />}
-/>
+import AddJob
+from "./pages/AddJob";
 
-<Route
-  path="/my-businesses"
-  element={<MyBusinesses />}
-/>
+import AddUpdate
+from "./pages/AddUpdate";
 
-<Route
-  path="/profile"
-  element={<Profile />}
-/>
+import AddDeathNote
+from "./pages/AddDeathNote";
+
+import Birthdays
+from "./pages/Birthdays";
+
+import DeathNotes
+from "./pages/DeathNotes";
+
+import MyBusinesses
+from "./pages/MyBusinesses";
+
+import AdminDashboard
+from "./pages/AdminDashboard";
+
+import BusinessApproval
+from "./pages/admin/BusinessApproval";
+
+import BloodApproval
+from "./pages/admin/BloodApproval";
+
+import MatrimonyApproval
+from "./pages/admin/MatrimonyApproval";
+
+import ManageFamilies
+from "./pages/admin/ManageFamilies";
+
+import AdminUpdates
+from "./pages/AdminUpdates";
+
+import AdminJobs
+from "./pages/AdminJobs";
+
+import AdminDeathNotes
+from "./pages/AdminDeathNotes";
+
+import AddAdvertisement
+from "./pages/AddAdvertisement";
+
+import AddProfessional
+from "./pages/AddProfessional";
+
+import Professionals
+from "./pages/Professionals";
 
 
-        <Route
-  path="/edit-business/:id"
-  element={<EditBusiness />}
-/>
+function App(){
 
-        <Route
-  path="/professionals"
-  element={<Professionals />}
-/>
+return(
 
-        <Route
-  path="/add-professional"
-  element={
-    <AddProfessional />
-  }
-/>
+<BrowserRouter>
 
-        <Route
-  path="/add-advertisement"
-  element={
-    <AddAdvertisement />
-  }
-/>
 
-        <Route
-  path="/master-admin"
-  element={
-    <AdminDashboard />
-  }
-/>
+<Routes>
 
-        <Route
-  path="/death-notes"
-  element={<DeathNotes />}
-/>
 
-<Route
-  path="/admin-death-notes"
-  element={<AdminDeathNotes />}
-/>
-
-        <Route
-  path="/add-death-note"
-  element={<AddDeathNote />}
-/>
-
-        <Route
-  path="/birthdays"
-  element={<Birthdays />}
-/>
-
-        <Route
-  path="/admin-updates"
-  element={<AdminUpdates />}
-/>
-
-        <Route
-          path="/business"
-          element={<Business />}
-        />
-
-        <Route
-          path="/business/:id"
-          element={<BusinessDetails />}
-        />
-
-        <Route
-          path="/add-business"
-          element={<AddBusiness />}
-        />
-
-        <Route
-          path="/families"
-          element={<Families />}
-        />
-
-        <Route
-          path="/add-family"
-          element={<AddFamily />}
-        />
-
-        <Route
-          path="/jobs"
-          element={<Jobs />}
-        />
-
-        <Route
-          path="/matrimony"
-          element={<Matrimony />}
-        />
-
-        <Route
-          path="/blood"
-          element={<Blood />}
-        />
-
-        <Route
-          path="/admin"
-          element={<Admin />}
-        />
-        <Route
-  path="/add-member/:familyId"
-  element={<AddMember />}
-/>
+{/* PUBLIC ROUTES */}
 
 
 <Route
-  path="/family-login"
-  element={<FamilyLogin />}
-/>
 
+path="/family-login"
 
-<Route
-  path="/members/:familyId"
-  element={<FamilyMembers />}
-/>
-
-<Route
-  path="/edit-member/:id"
-  element={<EditMember />}
-/>
-
-<Route
-  path="/matrimony/:id"
-  element={<MatrimonyDetails />}
-/>
-
-<Route
-  path="/add-blood-request"
-  element={<AddBloodRequest />}
-/>
-<Route
-  path="/add-job"
-  element={<AddJob />}
-/>
-  
-  <Route
-  path="/admin-blood"
-  element={<AdminBloodRequests />}
-/>
-
-<Route
-  path="/admin-jobs"
-  element={<AdminJobs />}
-/>
-
-<Route
-  path="/add-update"
-  element={<AddUpdate />}
-/>
-
-<Route
-  path="/updates"
-  element={<Updates />}
-/>
-
-      </Routes>
-      </Layout>
-    </BrowserRouter>
-  );
+element={
+<FamilyLogin />
 }
+
+/>
+
+
+<Route
+
+path="/add-family"
+
+element={
+<AddFamily />
+}
+
+/>
+
+{/* PROTECTED APP */}
+
+
+<Route
+
+path="/*"
+
+element={
+
+<ProtectedRoute>
+
+<Layout>
+
+
+<Routes>
+
+
+<Route
+
+path="/"
+
+element={
+<Home />
+}
+
+/>
+
+
+<Route
+
+path="/business"
+
+element={
+<Business />
+}
+
+/>
+
+
+<Route
+
+path="/business/:id"
+
+element={
+<BusinessDetails />
+}
+
+/>
+
+
+
+<Route
+
+path="/matrimony"
+
+element={
+<Matrimony />
+}
+
+/>
+
+
+
+<Route
+
+path="/matrimony/:id"
+
+element={
+<MatrimonyDetails />
+}
+
+/>
+
+
+
+<Route
+
+path="/blood"
+
+element={
+<Blood />
+}
+
+/>
+
+
+
+<Route
+
+path="/families"
+
+element={
+<Families />
+}
+
+/>
+
+
+
+<Route
+
+path="/jobs"
+
+element={
+<Jobs />
+}
+
+/>
+
+
+
+<Route
+
+path="/updates"
+
+element={
+<Updates />
+}
+
+/>
+
+
+
+<Route
+
+path="/profile"
+
+element={
+<Profile />
+}
+
+/>
+
+
+
+<Route
+
+path="/search"
+
+element={
+<Search />
+}
+
+/>
+
+
+
+
+{/* FAMILY */}
+
+
+<Route
+
+path="/add-member/:familyId"
+
+element={
+<AddMember />
+}
+
+/>
+
+
+
+<Route
+
+path="/members/:familyId"
+
+element={
+<FamilyMembers />
+}
+
+/>
+
+
+
+<Route
+
+path="/edit-member/:id"
+
+element={
+<EditMember />
+}
+
+/>
+
+
+
+<Route
+
+path="/edit-family/:id"
+
+element={
+<AddFamily />
+}
+
+/>
+
+
+
+{/* ADD / EDIT */}
+
+
+<Route
+
+path="/add-business"
+
+element={
+<AddBusiness />
+}
+
+/>
+
+
+<Route
+
+path="/edit-business/:id"
+
+element={
+<EditBusiness />
+}
+
+/>
+
+
+<Route
+
+path="/my-businesses"
+
+element={
+<MyBusinesses />
+}
+
+/>
+
+
+
+<Route
+
+path="/add-blood-request"
+
+element={
+<AddBloodRequest />
+}
+
+/>
+
+
+
+<Route
+
+path="/add-job"
+
+element={
+<AddJob />
+}
+
+/>
+
+
+
+<Route
+
+path="/add-update"
+
+element={
+<AddUpdate />
+}
+
+/>
+
+
+
+<Route
+
+path="/birthdays"
+
+element={
+<Birthdays />
+}
+
+/>
+
+
+
+<Route
+
+path="/death-notes"
+
+element={
+<DeathNotes />
+}
+
+/>
+{/* ADMIN ROUTES */}
+
+
+<Route
+
+path="/admin"
+
+element={
+<AdminDashboard />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin/business-approval"
+
+element={
+<BusinessApproval />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin/blood-approval"
+
+element={
+<BloodApproval />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin/matrimony-approval"
+
+element={
+<MatrimonyApproval />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin/families"
+
+element={
+<ManageFamilies />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin-updates"
+
+element={
+<AdminUpdates />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin-jobs"
+
+element={
+<AdminJobs />
+}
+
+/>
+
+
+
+<Route
+
+path="/admin-death-notes"
+
+element={
+<AdminDeathNotes />
+}
+
+/>
+
+
+
+<Route
+
+path="/add-advertisement"
+
+element={
+<AddAdvertisement />
+}
+
+/>
+
+
+
+<Route
+
+path="/add-professional"
+
+element={
+<AddProfessional />
+}
+
+/>
+
+
+
+<Route
+
+path="/professionals"
+
+element={
+<Professionals />
+}
+
+/>
+
+
+
+</Routes>
+
+
+</Layout>
+
+
+</ProtectedRoute>
+
+}
+
+/>
+
+
+</Routes>
+
+
+</BrowserRouter>
+
+);
+
+}
+
 
 export default App;

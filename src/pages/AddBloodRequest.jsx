@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { db } from "../firebase/config";
 
@@ -9,6 +10,7 @@ import {
 } from "firebase/firestore";
 
 function AddBloodRequest() {
+  const navigate = useNavigate();
   const [formData, setFormData] =
     useState({
       patientName: "",
@@ -54,7 +56,7 @@ function AddBloodRequest() {
         alert(
           "Blood Request Submitted Successfully"
         );
-
+navigate("/blood");
         setFormData({
           patientName: "",
           bloodGroup: "",
@@ -233,16 +235,35 @@ function AddBloodRequest() {
           }
         />
 
-        <InputField
-          label="Required Date"
-          name="requirementDate"
-          value={
-            formData.requirementDate
-          }
-          onChange={
-            handleChange
-          }
-        />
+        <div
+  style={{
+    marginBottom:"15px",
+  }}
+>
+<label
+style={{
+display:"block",
+fontWeight:"600",
+marginBottom:"6px",
+}}
+>
+Required Date
+</label>
+
+<input
+type="date"
+name="requirementDate"
+value={formData.requirementDate}
+onChange={handleChange}
+style={{
+width:"100%",
+padding:"12px",
+borderRadius:"12px",
+border:"1px solid #ddd",
+}}
+/>
+
+</div>
 
         <div
           style={{

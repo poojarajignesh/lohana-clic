@@ -24,6 +24,11 @@ import logo from "../assets/logo.png";
 import LatestCards from "../components/home/LatestCards";
 import AddBusinessButton from "../components/home/AddBusinessButton";
 
+import BloodAlert
+from "../components/home/BloodAlert";
+
+
+
 
 function Home() {
   const navigate = useNavigate();
@@ -330,6 +335,7 @@ const fetchCounts =
       
       <AnnouncementStrip />
       <AdvertisementSlider />
+      <BloodAlert />
       
       {/* Search */}
 

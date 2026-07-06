@@ -8,6 +8,8 @@ import {
   addDoc,
   collection,
   serverTimestamp,
+  doc,
+  getDoc,
 } from "firebase/firestore";
 
 function AddMember() {
@@ -29,7 +31,7 @@ const [uploading, setUploading] =
     education: "",
     occupation: "",
     maritalStatus: "",
-    currentPlace: "",
+    currentPlace: "", 
 
     gender: "",
     height: "",
@@ -100,9 +102,27 @@ const uploadImage =
   ) => {
     e.preventDefault();
 
-    try {
-    const photoUrl =
+   try {
+
+const photoUrl =
   await uploadImage();
+
+
+const familyRef = doc(
+  db,
+  "families",
+  familyId
+);
+
+const familySnap =
+  await getDoc(
+    familyRef
+  );
+
+const familyData =
+  familySnap.exists()
+    ? familySnap.data()
+    : {};
 
 await addDoc(
   collection(
@@ -110,22 +130,30 @@ await addDoc(
     "members"
   ),
   {
-  ...formData,
+    ...formData,
 
-  photoUrl,
+    photoUrl,
 
-  familyId,
-
-  familyDocId:
     familyId,
 
-  isMatrimony:
-    formData.isMatrimony ||
-    false,
+    familyDocId:
+      familyId,
 
-  createdAt:
-    serverTimestamp(),
-}
+    currentPlace:
+      familyData.currentPlace || "",
+
+    village:
+      familyData.village || "",
+
+    district:
+      familyData.district || "",
+
+    city:
+      familyData.city || "",
+
+    createdAt:
+      serverTimestamp(),
+  }
 );
 
       alert(

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+
 import { db } from "../firebase/config";
 import { useNavigate } from "react-router-dom";
+import MatrimonyCard from "../components/matrimony/MatrimonyCard";
 
 import {
   collection,
@@ -18,11 +20,17 @@ import {
 function Matrimony() {
   const [profiles, setProfiles] =
     useState([]);
+
+    
     
   const navigate = useNavigate();  
 
   const [search, setSearch] =
-    useState("");
+  useState("");
+
+  const [genderFilter, setGenderFilter] =
+  useState("All");
+
 
   useEffect(() => {
     fetchProfiles();
@@ -101,24 +109,32 @@ function Matrimony() {
   };
 
   const filteredProfiles =
-    profiles.filter(
-      (profile) =>
-        profile.fullName
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-        profile.education
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          ) ||
-        profile.occupation
-          ?.toLowerCase()
-          .includes(
-            search.toLowerCase()
-          )
+  profiles.filter((profile) => {
+
+    const searchMatch =
+      profile.fullName
+        ?.toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      profile.education
+        ?.toLowerCase()
+        .includes(search.toLowerCase()) ||
+
+      profile.occupation
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
+
+
+    const genderMatch =
+      genderFilter === "All" ||
+      profile.gender === genderFilter;
+
+
+    return (
+      searchMatch &&
+      genderMatch
     );
+  });
 
   return (
     <div
@@ -211,6 +227,37 @@ function Matrimony() {
         </div>
       </div>
 
+      {/* Gender Filter */}
+
+<div
+  style={{
+    display: "flex",
+    gap: "10px",
+    marginBottom: "20px",
+  }}
+>
+  {["All","Male","Female"].map(
+    (item) => (
+      <button
+        key={item}
+        onClick={() =>
+          setGenderFilter(item)
+        }
+      >
+        {item}
+      </button>
+    )
+  )}
+</div>
+
+
+{/* Count */}
+
+<div>
+  Total Profiles :
+  {filteredProfiles.length}
+</div>
+
       {/* Count */}
 
       <div
@@ -227,150 +274,18 @@ function Matrimony() {
         }
       </div>
 
-      {/* Cards */}
+      
 
-      {filteredProfiles.map(
-        (profile) => (
-          <div
-            key={profile.id}
-            style={{
-              background:
-                "#fff",
-              borderRadius:
-                "24px",
-              padding: "20px",
-              marginBottom:
-                "15px",
-              boxShadow:
-                "0 8px 20px rgba(0,0,0,0.08)",
-            }}
-          >
-            <div
-              style={{
-                display:
-                  "flex",
-                justifyContent:
-                  "space-between",
-                alignItems:
-                  "center",
-                marginBottom:
-                  "15px",
-              }}
-            >
-              <div>
-                <h3
-                  style={{
-                    margin: 0,
-                    color:
-                      "#1E88E5",
-                  }}
-                >
-                  {
-                    profile.fullName
-                  }
-                </h3>
+      {/* Premium Cards */}
 
-                <p
-                  style={{
-                    margin:
-                      "5px 0",
-                    color:
-                      "#777",
-                  }}
-                >
-                  Age :
-                  {" "}
-                  {calculateAge(
-                    profile.dob
-                  )}
-                </p>
-              </div>
-
-              <div
-                style={{
-                  width:
-                    "55px",
-                  height:
-                    "55px",
-                  borderRadius:
-                    "50%",
-                  background:
-                    "#FFE6DC",
-                  display:
-                    "flex",
-                  justifyContent:
-                    "center",
-                  alignItems:
-                    "center",
-                }}
-              >
-               {profile.photoUrl ? (
-  <img
-    src={profile.photoUrl}
-    alt={profile.fullName}
-    style={{
-      width: "55px",
-      height: "55px",
-      borderRadius: "50%",
-      objectFit: "cover",
-    }}
-  />
-) : (
-  <FaHeart
-    color="#FF6B00"
-    size={22}
-  />
+{filteredProfiles.map(
+  (profile) => (
+    <MatrimonyCard
+      key={profile.id}
+      profile={profile}
+    />
+  )
 )}
-              </div>
-            </div>
-
-            <p>
-              <FaGraduationCap />
-              {" "}
-              {
-                profile.education
-              }
-            </p>
-
-            <p>
-              <FaBriefcase />
-              {" "}
-              {
-                profile.occupation
-              }
-            </p>
-
-            <p>
-              Blood Group :
-              {" "}
-              {
-                profile.bloodGroup
-              }
-            </p>
-
-            <button
-  onClick={() =>
-    navigate(
-      `/matrimony/${profile.id}`
-    )
-  }
-  style={{
-    width: "100%",
-    padding: "12px",
-    border: "none",
-    borderRadius: "14px",
-    background: "#FF6B00",
-    color: "#fff",
-    fontWeight: "700",
-    cursor: "pointer",
-    marginTop: "15px",
-  }}
->
-  View Profile
-</button>
-          </div>
-        )
-      )}
 
       {filteredProfiles.length ===
         0 && (
