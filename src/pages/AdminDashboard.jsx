@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import {
   collection,
   getDocs,
 } from "firebase/firestore";
 
-import { db } from "../firebase/config";
+import {
+  db,
+} from "../firebase/config";
 
 import {
   FaUsers,
@@ -14,29 +22,33 @@ import {
   FaStore,
   FaBriefcase,
   FaTint,
-  FaBullhorn,
-  FaPrayingHands,
-  FaCheckCircle,
+  FaHeart,
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 
-function AdminDashboard() {
+function AdminDashboard(){
 
-const navigate =
-useNavigate();
+const navigate = useNavigate();
 
 
 const [counts,setCounts] =
 useState({
+
 families:0,
 members:0,
+
 businesses:0,
 pendingBusinesses:0,
+
+matrimony:0,
+pendingMatrimony:0,
+
 jobs:0,
+
 bloodRequests:0,
 pendingBlood:0,
-updates:0,
-deathNotes:0,
+
 });
 
 
@@ -84,30 +96,22 @@ collection(db,"bloodRequests")
 );
 
 
-const updates =
-await getDocs(
-collection(db,"updates")
+const memberData =
+members.docs.map(
+d=>d.data()
 );
-
-
-const deathNotes =
-await getDocs(
-collection(db,"deathNotes")
-);
-
 
 
 const businessData =
 businesses.docs.map(
-(d)=>d.data()
+d=>d.data()
 );
 
 
 const bloodData =
 blood.docs.map(
-(d)=>d.data()
+d=>d.data()
 );
-
 
 
 setCounts({
@@ -123,7 +127,21 @@ businesses.size,
 
 pendingBusinesses:
 businessData.filter(
-(b)=>b.status==="Pending"
+x=>x.status==="Pending"
+).length,
+
+
+matrimony:
+memberData.filter(
+x=>x.isMatrimony===true
+).length,
+
+
+pendingMatrimony:
+memberData.filter(
+x=>
+x.isMatrimony===true &&
+x.matrimonyStatus==="Pending"
 ).length,
 
 
@@ -137,33 +155,37 @@ blood.size,
 
 pendingBlood:
 bloodData.filter(
-(b)=>b.status==="Pending"
+x=>x.status==="Pending"
 ).length,
-
-
-updates:
-updates.size,
-
-
-deathNotes:
-deathNotes.size,
 
 });
 
 
 }
-catch(error){
+catch(e){
 
-console.log(error);
+console.log(e);
 
 }
 
 };
+const logout = () => {
 
-return (
+localStorage.removeItem(
+"isAdmin"
+);
+
+navigate(
+"/admin-login"
+);
+
+};
+
+
+
+return(
 
 <div
-
 style={{
 maxWidth:"430px",
 margin:"0 auto",
@@ -171,7 +193,6 @@ padding:"20px",
 background:"#F8FAFC",
 minHeight:"100vh",
 }}
-
 >
 
 
@@ -179,47 +200,62 @@ minHeight:"100vh",
 
 
 <div
-
 style={{
 background:
-"linear-gradient(135deg,#2D1B7E,#5B3DF5)",
-padding:"28px",
+"linear-gradient(135deg,#111827,#2D1B7E,#5B3DF5)",
+padding:"25px",
 borderRadius:"28px",
 color:"#fff",
-marginBottom:"22px",
-boxShadow:
-"0 15px 35px rgba(45,27,126,.25)",
+marginBottom:"20px",
 }}
-
 >
 
-<h1
+<div
 style={{
-margin:0,
-fontSize:"28px",
-fontWeight:"900",
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
 }}
 >
 
-Master Dashboard
 
+<div>
+
+<div>
+👑 Administrator
+</div>
+
+<h1>
+Lohana Clic
 </h1>
 
+<p>
+Master Dashboard
+</p>
 
-<p
+</div>
+
+
+<button
+
+onClick={logout}
+
 style={{
-opacity:.9,
+border:"none",
+padding:"12px",
+borderRadius:"15px",
 }}
 
 >
 
-Lohana Clic Admin Panel
+<FaSignOutAlt/>
 
-</p>
+</button>
 
 
 </div>
 
+</div>
 
 
 
@@ -227,138 +263,83 @@ Lohana Clic Admin Panel
 
 
 <div
-
 style={{
 display:"grid",
-gridTemplateColumns:
-"repeat(2,1fr)",
-gap:"14px",
-marginBottom:"25px",
+gridTemplateColumns:"repeat(2,1fr)",
+gap:"15px",
 }}
-
 >
 
 
 <Card
-
 title="Families"
-
 value={counts.families}
-
 icon={<FaUsers/>}
-
 />
 
 
 <Card
-
 title="Members"
-
 value={counts.members}
-
 icon={<FaUser/>}
-
 />
 
 
 <Card
-
 title="Businesses"
-
 value={counts.businesses}
-
 icon={<FaStore/>}
-
 />
 
 
 <Card
-
-title="Pending Business"
-
-value={counts.pendingBusinesses}
-
-icon={<FaCheckCircle/>}
-
+title="Matrimony"
+value={counts.matrimony}
+icon={<FaHeart/>}
 />
 
 
 <Card
-
-title="Blood Requests"
-
-value={counts.bloodRequests}
-
-icon={<FaTint/>}
-
-/>
-
-
-<Card
-
-title="Pending Blood"
-
-value={counts.pendingBlood}
-
-icon={<FaTint/>}
-
-/>
-
-
-<Card
-
 title="Jobs"
-
 value={counts.jobs}
-
 icon={<FaBriefcase/>}
-
 />
 
 
 <Card
-
-title="Updates"
-
-value={counts.updates}
-
-icon={<FaBullhorn/>}
-
-/>
-
-
-<Card
-
-title="Death Notes"
-
-value={counts.deathNotes}
-
-icon={<FaPrayingHands/>}
-
+title="Blood"
+value={counts.bloodRequests}
+icon={<FaTint/>}
 />
 
 
 </div>
-{/* QUICK ACTIONS */}
 
 
-<h2
-style={{
-marginBottom:"15px",
-color:"#111827",
-}}
->
 
-Admin Actions
+<h3>
+<ActionButton
 
-</h2>
+title="📢 Manage Advertisements"
+
+onClick={()=>
+navigate(
+"/admin/advertisements"
+)
+}
+
+/>
+</h3>
+
 
 
 <ActionButton
 
-title="Approve Businesses"
+title={
+`Business Approval (${counts.pendingBusinesses})`
+}
 
-onClick={() =>
+onClick={()=>
 navigate(
 "/admin/business-approval"
 )
@@ -367,11 +348,30 @@ navigate(
 />
 
 
+
 <ActionButton
 
-title="Approve Blood Requests"
+title={
+`Matrimony Approval (${counts.pendingMatrimony})`
+}
 
-onClick={() =>
+onClick={()=>
+navigate(
+"/admin/matrimony-approval"
+)
+}
+
+/>
+
+
+
+<ActionButton
+
+title={
+`Blood Approval (${counts.pendingBlood})`
+}
+
+onClick={()=>
 navigate(
 "/admin/blood-approval"
 )
@@ -381,24 +381,11 @@ navigate(
 
 <ActionButton
 
-title="Approve Matrimony Profiles"
+title="🔔 Send Notification"
 
-onClick={() =>
+onClick={()=>
 navigate(
-"/admin/matrimony-approval"
-)
-}
-
-/>
-
-
-<ActionButton
-
-title="Manage Families"
-
-onClick={() =>
-navigate(
-"/admin/families"
+"/admin/notification"
 )
 }
 
@@ -417,64 +404,40 @@ navigate(
 function Card({
 title,
 value,
-icon,
+icon
 }){
 
 return(
 
 <div
-
 style={{
 background:"#fff",
+padding:"18px",
 borderRadius:"22px",
-padding:"20px",
 textAlign:"center",
 boxShadow:
 "0 10px 25px rgba(0,0,0,.08)",
 }}
-
 >
 
 <div
-
 style={{
-fontSize:"28px",
+fontSize:"25px",
 color:"#2D1B7E",
 }}
-
 >
 
 {icon}
 
 </div>
 
-
-<h2
-
-style={{
-margin:"10px 0 5px",
-fontWeight:"900",
-}}
-
->
-
+<h2>
 {value}
-
 </h2>
 
-
-<p
-style={{
-margin:0,
-color:"#64748B",
-fontWeight:"600",
-}}
->
-
+<p>
 {title}
-
 </p>
-
 
 </div>
 
@@ -487,7 +450,7 @@ fontWeight:"600",
 
 function ActionButton({
 title,
-onClick,
+onClick
 }){
 
 return(
@@ -498,18 +461,14 @@ onClick={onClick}
 
 style={{
 width:"100%",
-padding:"16px",
+padding:"15px",
 border:"none",
 borderRadius:"18px",
 background:
 "linear-gradient(135deg,#FF6B00,#FF8C42)",
 color:"#fff",
 fontWeight:"800",
-fontSize:"15px",
-marginBottom:"12px",
-cursor:"pointer",
-boxShadow:
-"0 10px 25px rgba(255,107,0,.25)",
+marginTop:"12px",
 }}
 
 >
@@ -521,6 +480,7 @@ boxShadow:
 );
 
 }
+
 
 
 export default AdminDashboard;
