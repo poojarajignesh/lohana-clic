@@ -6,7 +6,7 @@ import {
 
 import AdminAdvertisements
 from "./pages/AdminAdvertisements";
-
+import MasterData from "./pages/admin/MasterData";
 
 import ProtectedRoute
 from "./components/ProtectedRoute";
@@ -197,6 +197,15 @@ element={
 <AdminNotification />
 </AdminProtectedRoute>
 }
+/>
+
+<Route
+  path="/admin/master-data"
+  element={
+    <AdminProtectedRoute>
+      <MasterData />
+    </AdminProtectedRoute>
+  }
 />
 
 <Route

@@ -481,14 +481,20 @@ color:"#DC2626",
 
 
 <p>
-
 Status :
 {" "}
-
-<b>
+<b
+style={{
+color:
+r.status==="Approved"
+?"green"
+:r.status==="Rejected"
+?"red"
+:"#F59E0B",
+}}
+>
 {r.status}
 </b>
-
 </p>
 
 

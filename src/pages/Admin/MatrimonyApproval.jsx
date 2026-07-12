@@ -117,29 +117,28 @@ loadProfiles();
 
 
 
-const rejectProfile =
-async(id)=>{
+const rejectProfile = async (id) => {
 
+  if (!window.confirm("Reject this profile?")) {
+    return;
+  }
 
-await updateDoc(
+  try {
 
-doc(
-db,
-"members",
-id
-),
+    await updateDoc(
+      doc(db, "members", id),
+      {
+        status: "Rejected",
+      }
+    );
 
-{
+    loadProfiles();
 
-status:"Rejected"
+  } catch (error) {
 
-}
+    console.log(error);
 
-);
-
-
-loadProfiles();
-
+  }
 
 };
 
@@ -564,14 +563,19 @@ color:"#DB2777",
 
 
 <p>
-
-Status :
-{" "}
-
-<b>
-{p.status || "Pending"}
+Status :{" "}
+<b
+  style={{
+    color:
+      (p.status || "Pending") === "Approved"
+        ? "#16A34A"
+        : (p.status || "Pending") === "Rejected"
+        ? "#DC2626"
+        : "#F59E0B",
+  }}
+>
+  {p.status || "Pending"}
 </b>
-
 </p>
 
 

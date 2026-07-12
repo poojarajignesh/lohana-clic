@@ -390,6 +390,12 @@ navigate(
 }
 
 />
+<ActionButton
+  title="🗂 Master Data"
+  onClick={() =>
+    navigate("/admin/master-data")
+  }
+/>
 
 
 </div>
