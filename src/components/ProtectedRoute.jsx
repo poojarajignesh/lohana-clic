@@ -1,44 +1,23 @@
-import {
-  Navigate,
-} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase/config";
 
-import {
-  getFamily,
-} from "../auth/Auth";
+function ProtectedRoute({ children }) {
+  const [state, setState] = useState({ loading: true, hasFamily: false });
 
+  useEffect(() => onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      setState({ loading: false, hasFamily: false });
+      return;
+    }
 
-function ProtectedRoute({
-children
-}){
+    const token = await user.getIdTokenResult();
+    setState({ loading: false, hasFamily: typeof token.claims.familyId === "string" });
+  }), []);
 
-
-const family =
-getFamily();
-
-
-
-if(!family){
-
-return(
-
-<Navigate
-
-to="/family-login"
-
-replace
-
-/>
-
-);
-
+  if (state.loading) return <div style={{ padding: "40px", textAlign: "center" }}>Loading...</div>;
+  return state.hasFamily ? children : <Navigate to="/family-login" replace />;
 }
-
-
-
-return children;
-
-
-}
-
 
 export default ProtectedRoute;

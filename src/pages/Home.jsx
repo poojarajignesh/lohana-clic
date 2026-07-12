@@ -66,13 +66,6 @@ function Home() {
   const [tapCount, setTapCount] =
     useState(0);
 
-  const [showAdminLogin, setShowAdminLogin] =
-    useState(false);
-
-  const [adminPassword, setAdminPassword] =
-    useState("");
-
-
   useEffect(() => {
 
     fetchCounts();
@@ -290,35 +283,11 @@ function Home() {
 
       setTapCount(0);
 
-      setShowAdminLogin(true);
+      navigate("/admin-login");
 
     }
 
   };
-
-
-  const handlePasswordChange =
-  (e) => {
-
-    const value =
-      e.target.value;
-
-    setAdminPassword(value);
-
-
-    if(value === "9854"){
-
-      setShowAdminLogin(false);
-
-      setAdminPassword("");
-
-      navigate("/admin");
-
-    }
-
-  };
-
-
   return (
 
     <div
@@ -474,84 +443,6 @@ function Home() {
         updates={updates}
 
       />
-
-
-      {showAdminLogin && (
-
-        <div
-
-          style={{
-
-            position:"fixed",
-
-            inset:0,
-
-            background:
-            "rgba(0,0,0,.5)",
-
-            display:"flex",
-
-            justifyContent:"center",
-
-            alignItems:"center",
-
-            zIndex:9999,
-
-          }}
-
-        >
-
-          <div
-
-            style={{
-
-              background:"#fff",
-
-              padding:"25px",
-
-              borderRadius:"20px",
-
-              width:"300px",
-
-            }}
-
-          >
-
-            <h3>
-
-              Admin Access
-
-            </h3>
-
-
-            <input
-
-              type="password"
-
-              autoFocus
-
-              value={adminPassword}
-
-              placeholder="Enter Password"
-
-              onChange={handlePasswordChange}
-
-              style={{
-
-                width:"100%",
-
-                padding:"12px",
-
-              }}
-
-            />
-
-          </div>
-
-        </div>
-
-      )}
-
     </div>
 
   );

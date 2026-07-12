@@ -1,0 +1,63 @@
+// Prototype launch rules. Custom claims are assigned only with the Firebase
+// Admin SDK: { admin: true } or { familyId: "LCF000001" }.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() { return signedIn() && request.auth.token.admin == true; }
+    function isFamily(familyId) {
+      return signedIn() && request.auth.token.familyId is string && request.auth.token.familyId == familyId;
+    }
+    function unchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+    function required(fields) { return request.resource.data.keys().hasAll(fields); }
+    function validFamily() {
+      return required(['familyId', 'headName', 'status']) &&
+        request.resource.data.familyId is string && request.resource.data.familyId.size() > 0 && request.resource.data.familyId.size() <= 32 &&
+        request.resource.data.headName is string && request.resource.data.headName.size() > 0 && request.resource.data.headName.size() <= 120 &&
+        request.resource.data.status in ['Pending', 'Approved', 'Rejected'];
+    }
+    function validMember() {
+      return required(['familyId', 'fullName']) &&
+        request.resource.data.familyId is string && request.resource.data.familyId.size() > 0 && request.resource.data.familyId.size() <= 32 &&
+        request.resource.data.fullName is string && request.resource.data.fullName.size() > 0 && request.resource.data.fullName.size() <= 120;
+    }
+    function validBusiness() {
+      return required(['ownerFamilyId', 'businessName', 'status']) &&
+        request.resource.data.ownerFamilyId is string && request.resource.data.ownerFamilyId.size() > 0 && request.resource.data.ownerFamilyId.size() <= 32 &&
+        request.resource.data.businessName is string && request.resource.data.businessName.size() > 0 && request.resource.data.businessName.size() <= 160 &&
+        request.resource.data.status in ['Pending', 'Approved', 'Rejected'];
+    }
+
+    // Documents contain contact details and addresses, so only the linked
+    // family or an administrator may read them.
+    match /families/{familyDocId} {
+      allow read: if isAdmin() || isFamily(resource.data.familyId);
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (isFamily(resource.data.familyId) && validFamily() && unchanged(['familyId', 'status', 'createdAt']));
+    }
+
+    match /members/{memberId} {
+      allow read: if isAdmin() || isFamily(resource.data.familyId);
+      allow create: if isAdmin() || (isFamily(request.resource.data.familyId) && validMember());
+      allow update: if isAdmin() || (isFamily(resource.data.familyId) && validMember() && unchanged(['familyId', 'familyDocId', 'createdAt']));
+      allow delete: if isAdmin() || isFamily(resource.data.familyId);
+    }
+
+    // Families can manage their own pending business, but cannot self-approve
+    // or transfer ownership. Only admins may change approval status.
+    match /businesses/{businessId} {
+      allow read: if isAdmin() || isFamily(resource.data.ownerFamilyId) || (signedIn() && resource.data.status == 'Approved');
+      allow create: if isAdmin() || (isFamily(request.resource.data.ownerFamilyId) && validBusiness() && request.resource.data.status == 'Pending');
+      allow update: if isAdmin() || (isFamily(resource.data.ownerFamilyId) && validBusiness() && unchanged(['ownerFamilyId', 'status', 'createdAt']));
+      allow delete: if isAdmin() || isFamily(resource.data.ownerFamilyId);
+    }
+
+    match /counters/{counterId} { allow read, write: if isAdmin(); }
+
+    // All remaining operational data is closed pending a server-verified
+    // ownership model. The default is deny, not browser-supplied roles.
+    match /{document=**} { allow read, write: if isAdmin(); }
+  }
+}

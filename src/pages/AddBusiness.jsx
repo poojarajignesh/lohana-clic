@@ -12,17 +12,23 @@ const loggedFamily = getLoggedFamily();
 
 const [formData, setFormData] =
 useState({
-ownerName: "",
+ownerName: loggedFamily?.headName || "",
 businessName: "",
 category: "",
 subCategory: "",
-city: "",
+city:
+loggedFamily?.currentPlace ||
+loggedFamily?.village ||
+"",
 address: "",
-mobile: "",
-whatsapp: "",
+mobile:
+loggedFamily?.mobile1 || "",
+whatsapp:
+loggedFamily?.mobile1 || "",
 email: "",
 website: "",
 description: "",
+logo: "",
 });
 
 const handleChange = (e) => {
@@ -84,13 +90,17 @@ try {
     businessName: "",
     category: "",
     subCategory: "",
-    city: "",
+    city:
+  loggedFamily?.currentPlace ||
+  loggedFamily?.village ||
+  "",
     address: "",
-    mobile: "",
-    whatsapp: "",
+    mobile: loggedFamily?.mobile1 || "",
+   whatsapp: loggedFamily?.mobile1 || "",
     email: "",
     website: "",
     description: "",
+    logo: "",
   });
 } catch (error) {
   console.error(error);

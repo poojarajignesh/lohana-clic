@@ -14,6 +14,7 @@ import {
 
 import {
   db,
+  auth,
 } from "../firebase/config";
 
 import {
@@ -169,16 +170,9 @@ console.log(e);
 }
 
 };
-const logout = () => {
-
-localStorage.removeItem(
-"isAdmin"
-);
-
-navigate(
-"/admin-login"
-);
-
+const logout = async () => {
+  await auth.signOut();
+  navigate("/admin-login");
 };
 
 

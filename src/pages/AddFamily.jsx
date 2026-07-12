@@ -12,11 +12,106 @@ import {
 } from "firebase/firestore";
 
 import {
-  districts,
-  getTalukas
+  getStates,
+  getDistricts,
+  getTalukas,
 } from "../data/locations";
 
-const states=["Gujarat"];
+const states = getStates();
+
+function InputField({
+  label,
+  name,
+  value,
+  onChange,
+}) {
+  return (
+    <div
+      style={{
+        marginBottom: "15px",
+      }}
+    >
+      <label
+        style={{
+          display: "block",
+          marginBottom: "6px",
+          fontWeight: "600",
+        }}
+      >
+        {label}
+      </label>
+
+      <input
+        type="text"
+        name={name}
+        value={value}
+        onChange={onChange}
+        style={{
+          width: "100%",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #ddd",
+          boxSizing: "border-box",
+        }}
+      />
+    </div>
+  );
+}
+
+function SelectField({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+}) {
+  return (
+    <div
+      style={{
+        marginBottom: "15px",
+      }}
+    >
+      <label
+        style={{
+          display: "block",
+          marginBottom: "6px",
+          fontWeight: "600",
+        }}
+      >
+        {label}
+      </label>
+
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        style={{
+          width: "100%",
+          padding: "12px",
+          borderRadius: "12px",
+          border: "1px solid #ddd",
+          background: "#fff",
+          boxSizing: "border-box",
+        }}
+      >
+        <option value="">
+          Select {label}
+        </option>
+
+        {options.map((item) => (
+          <option
+            key={item}
+            value={item}
+          >
+            {item}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+
 
 function AddFamily() {
 
@@ -67,10 +162,11 @@ function AddFamily() {
     if (formData.district) {
 
       setTalukas(
-        getTalukas(
-          formData.district
-        )
-      );
+  getTalukas(
+    formData.state,
+    formData.district
+  )
+);
 
     }
 
@@ -96,12 +192,12 @@ function AddFamily() {
 
         setFormData(data);
 
-        setTalukas(
-          getTalukas(
-            data.district
-          )
-        );
-
+       setTalukas(
+  getTalukas(
+    data.state,
+    data.district
+  )
+);
       }
 
     } catch (error) {
@@ -282,7 +378,7 @@ function AddFamily() {
           name="district"
           value={formData.district}
           onChange={handleChange}
-          options={districts}
+          options={getDistricts(formData.state)}
         />
 
         <SelectField
